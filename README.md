@@ -62,7 +62,8 @@ pnpx prisma db push
 Run the development server:
 
 ```bash
-pnm i
+pnpm i
+pnpm approve-builds
 pnpm run dev
 ```
 

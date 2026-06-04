@@ -1,21 +1,16 @@
 "use server";
 
-import { UploadSchema } from "@prisma/generated/zod";
+import { UploadInputSchema } from "@/types";
 
 export async function uploadDataAction(data: unknown) {
   try {
-    console.log("----- RECEIVED UPLOAD DATA -----");
-    console.log(JSON.stringify(data, null, 2));
-
-    const parsed = UploadSchema.safeParse(data);
+    const parsed = UploadInputSchema.safeParse(data);
     if (!parsed.success) {
-      console.warn("Note: Uploaded JSON does not strictly match UploadSchema:", parsed.error.issues);
-      return { success: true, warning: "Logged to console, but missing some fields." };
+      return { success: false, error: "Validation failed: " + JSON.stringify(parsed.error.issues) };
     }
 
     return { success: true };
-  } catch (error) {
-    console.error("Failed to handle Upload data:", error);
-    return { success: false, error };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Unknown error" };
   }
 }

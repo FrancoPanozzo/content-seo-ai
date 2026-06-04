@@ -55,8 +55,8 @@ Set up all the environment variables. Check /env.example.
 Set up the database:
 
 ```bash
-pnpx prisma generate
-pnpx prisma db push
+pnpm exec prisma generate
+pnpm exec prisma db push
 ```
 
 Run the development server:

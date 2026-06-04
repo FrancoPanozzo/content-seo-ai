@@ -1,0 +1,1012 @@
+{
+  "_meta": {
+    "description": "Seed dataset para SEO Content Agent Challenge. Basado en blog real de fanz.com.ar con metricas ficticias pero coherentes. Mercado objetivo: B2B organizadores de eventos en Argentina.",
+    "currency": "USD",
+    "generatedAt": "2026-05-01",
+    "windowDays": 90
+  },
+  "pages": [
+    {
+      "id": "page_001",
+      "url": "/blog/top-10-plataformas-ticketing-argentina-2025",
+      "title": "Top 10 Plataformas de Ticketing 2025 en Argentina | Comparativa",
+      "metaDescription": "Las 10 mejores plataformas de ticketing Argentina 2025: Fanz, Ticketek, Livepass y mas. Analisis completo de funciones, precios y tecnologia actualizada.",
+      "targetKeyword": "plataformas de ticketing argentina",
+      "intent": "commercial_comparison",
+      "audience": "b2b_organizers",
+      "wordCount": 4800,
+      "publishedAt": "2025-08-20",
+      "lastModified": "2025-08-20",
+      "metrics": {
+        "impressions": 12400,
+        "clicks": 580,
+        "position": 4.2,
+        "ctr": 0.0468,
+        "conversions": 18,
+        "conversionRate": 0.0310
+      }
+    },
+    {
+      "id": "page_002",
+      "url": "/blog/mejor-ticketera-2025-argentina-guia-organizadores",
+      "title": "Cual es la mejor ticketera en 2025? Guia para vender mas",
+      "metaDescription": "Como elegir la mejor ticketera en Argentina 2025: marca blanca, Mercado Pago, control de datos, IA y las claves para aumentar ventas y conversion.",
+      "targetKeyword": "mejor ticketera argentina",
+      "intent": "commercial_comparison",
+      "audience": "b2b_organizers",
+      "wordCount": 3200,
+      "publishedAt": "2025-11-18",
+      "lastModified": "2025-11-18",
+      "metrics": {
+        "impressions": 8200,
+        "clicks": 320,
+        "position": 5.1,
+        "ctr": 0.0390,
+        "conversions": 14,
+        "conversionRate": 0.0437
+      }
+    },
+    {
+      "id": "page_003",
+      "url": "/blog/ticketera-mercado-pago-cobrar-directo",
+      "title": "Ticketera con Mercado Pago: Cobra Directo Sin Intermediarios",
+      "metaDescription": "La ticketera con Mercado Pago preferida en Argentina: cobra directo sin intermediarios, comisiones hasta 60% mas bajas y marca blanca personalizable.",
+      "targetKeyword": "ticketera con mercado pago",
+      "intent": "transactional",
+      "audience": "b2b_organizers",
+      "wordCount": 1800,
+      "publishedAt": "2025-09-10",
+      "lastModified": "2025-09-10",
+      "metrics": {
+        "impressions": 6800,
+        "clicks": 95,
+        "position": 12.3,
+        "ctr": 0.0140,
+        "conversions": 4,
+        "conversionRate": 0.0421
+      }
+    },
+    {
+      "id": "page_004",
+      "url": "/blog/plataformas-para-eventos-argentina",
+      "title": "Plataformas para eventos en Argentina 2025: guia completa",
+      "metaDescription": "Comparativa 2025 de plataformas para eventos en Argentina. Analisis real de funciones, marca blanca, pagos, datos y herramientas para elegir la ideal.",
+      "targetKeyword": "plataformas eventos argentina",
+      "intent": "commercial_comparison",
+      "audience": "b2b_organizers",
+      "wordCount": 5200,
+      "publishedAt": "2025-12-01",
+      "lastModified": "2025-12-01",
+      "metrics": {
+        "impressions": 9500,
+        "clicks": 280,
+        "position": 6.8,
+        "ctr": 0.0295,
+        "conversions": 11,
+        "conversionRate": 0.0393
+      }
+    },
+    {
+      "id": "page_005",
+      "url": "/blog/¿cuál-es-la-ticketera-más-conveniente-guía-2025-en-argentina",
+      "title": "Cual es la ticketera mas conveniente? Guia 2025 en Argentina",
+      "metaDescription": "Cual es la ticketera mas conveniente en Argentina: criterios reales para organizadores. Marca blanca, datos propios, Mercado Pago y automatizacion.",
+      "targetKeyword": "ticketera mas conveniente argentina",
+      "intent": "commercial_comparison",
+      "audience": "b2b_organizers",
+      "wordCount": 2800,
+      "publishedAt": "2025-12-24",
+      "lastModified": "2025-12-24",
+      "metrics": {
+        "impressions": 4200,
+        "clicks": 95,
+        "position": 8.2,
+        "ctr": 0.0226,
+        "conversions": 6,
+        "conversionRate": 0.0632
+      }
+    },
+    {
+      "id": "page_006",
+      "url": "/blog/como-crear-una-ticketera-marca-blanca",
+      "title": "Como crear una ticketera marca blanca en 30 minutos",
+      "metaDescription": "Lanza tu plataforma de venta de entradas white-label con dominio propio, logo y cobros seguros. Empieza a vender sin marca externa en 30 min.",
+      "targetKeyword": "ticketera marca blanca",
+      "intent": "transactional",
+      "audience": "b2b_organizers",
+      "wordCount": 1400,
+      "publishedAt": "2025-08-05",
+      "lastModified": "2025-08-05",
+      "metrics": {
+        "impressions": 7800,
+        "clicks": 850,
+        "position": 3.4,
+        "ctr": 0.1090,
+        "conversions": 32,
+        "conversionRate": 0.0376
+      }
+    },
+    {
+      "id": "page_007",
+      "url": "/blog/datos-compradores-ticketera-como-usarlos-vender-mas",
+      "title": "Datos Compradores Ticketera: Como Usarlos para Vender Mas",
+      "metaDescription": "Guia completa sobre datos compradores ticketera en Argentina: como obtenerlos, usarlos para remarketing y aumentar ventas. Marca blanca con Fanz.",
+      "targetKeyword": "datos compradores ticketing",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2900,
+      "publishedAt": "2025-10-22",
+      "lastModified": "2025-10-22",
+      "metrics": {
+        "impressions": 3200,
+        "clicks": 110,
+        "position": 7.1,
+        "ctr": 0.0344,
+        "conversions": 3,
+        "conversionRate": 0.0273
+      }
+    },
+    {
+      "id": "page_008",
+      "url": "/blog/entradas-anticipadas-para-recitales-en-estadios-2026-guia-completa-para-no-quedarte-afuera",
+      "title": "Entradas Anticipadas para Recitales en Estadios 2026: Guia Completa",
+      "metaDescription": "Descubre como asegurar tus entradas para los recitales mas esperados de 2026 y evita quedarte afuera. Guia con estrategias y fechas anticipadas.",
+      "targetKeyword": "entradas anticipadas recitales 2026",
+      "intent": "transactional",
+      "audience": "b2c_buyers",
+      "wordCount": 2100,
+      "publishedAt": "2026-04-17",
+      "lastModified": "2026-04-17",
+      "metrics": {
+        "impressions": 24500,
+        "clicks": 1850,
+        "position": 4.8,
+        "ctr": 0.0755,
+        "conversions": 0,
+        "conversionRate": 0.0
+      }
+    },
+    {
+      "id": "page_009",
+      "url": "/blog/como-evitar-estafas-comprando-entradas-online-para-recitales-en-argentina-guia-completa-2025",
+      "title": "Como evitar estafas comprando entradas online para recitales en Argentina",
+      "metaDescription": "Protegete de las estafas al comprar entradas para recitales: 1 de cada 8 argentinos fue victima de fraude en tickets online segun datos 2024.",
+      "targetKeyword": "estafas entradas online argentina",
+      "intent": "informational",
+      "audience": "b2c_buyers",
+      "wordCount": 2400,
+      "publishedAt": "2026-04-16",
+      "lastModified": "2026-04-16",
+      "metrics": {
+        "impressions": 18900,
+        "clicks": 2100,
+        "position": 3.2,
+        "ctr": 0.1111,
+        "conversions": 0,
+        "conversionRate": 0.0
+      }
+    },
+    {
+      "id": "page_010",
+      "url": "/blog/entradas-lollapalooza-argentina-2027-guia-completa-para-conseguir-tickets-sin-morir-en-el-intento",
+      "title": "Entradas Lollapalooza Argentina 2027: Guia Completa para Conseguir Tickets",
+      "metaDescription": "Descubri la estrategia definitiva para conseguir entradas al Lollapalooza Argentina 2027 sin sufrir en el proceso.",
+      "targetKeyword": "entradas lollapalooza 2027",
+      "intent": "transactional",
+      "audience": "b2c_buyers",
+      "wordCount": 2800,
+      "publishedAt": "2026-04-11",
+      "lastModified": "2026-04-11",
+      "metrics": {
+        "impressions": 32100,
+        "clicks": 1980,
+        "position": 6.1,
+        "ctr": 0.0617,
+        "conversions": 0,
+        "conversionRate": 0.0
+      }
+    },
+    {
+      "id": "page_011",
+      "url": "/blog/preventa-de-entradas-que-es-como-funciona-argentina",
+      "title": "Preventa de Entradas: Que Es, Como Funciona y Como Implementarla",
+      "metaDescription": "Que es la preventa de entradas y como implementarla en tu evento: tipos, checklist, errores comunes y como medir resultados.",
+      "targetKeyword": "preventa de entradas",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2100,
+      "publishedAt": "2026-03-17",
+      "lastModified": "2026-03-17",
+      "metrics": {
+        "impressions": 5100,
+        "clicks": 95,
+        "position": 9.8,
+        "ctr": 0.0186,
+        "conversions": 4,
+        "conversionRate": 0.0421
+      }
+    },
+    {
+      "id": "page_012",
+      "url": "/blog/sponsors-de-eventos-cómo-conseguir-patrocinadores-y-vender",
+      "title": "Sponsors de Eventos: Como Conseguir Patrocinadores y Vender",
+      "metaDescription": "Como conseguir sponsors para eventos en Argentina: estrategia, pitch, beneficios y errores comunes.",
+      "targetKeyword": "sponsors para eventos",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 3400,
+      "publishedAt": "2026-03-10",
+      "lastModified": "2026-03-10",
+      "metrics": {
+        "impressions": 4800,
+        "clicks": 220,
+        "position": 5.6,
+        "ctr": 0.0458,
+        "conversions": 8,
+        "conversionRate": 0.0364
+      }
+    },
+    {
+      "id": "page_013",
+      "url": "/blog/eventos-hibridos-que-son-y-como-venderlos-en-argentina",
+      "title": "Eventos Hibridos: Que Son y Por Que Estan Cambiando el Juego",
+      "metaDescription": "Que son los eventos hibridos y por que crecen en Argentina: cuando convienen, 7 errores tipicos, checklist operativo y claves para vender tickets.",
+      "targetKeyword": "eventos hibridos argentina",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2200,
+      "publishedAt": "2026-03-03",
+      "lastModified": "2026-03-03",
+      "metrics": {
+        "impressions": 2800,
+        "clicks": 45,
+        "position": 11.4,
+        "ctr": 0.0161,
+        "conversions": 1,
+        "conversionRate": 0.0222
+      }
+    },
+    {
+      "id": "page_014",
+      "url": "/blog/carrito-abandonado-entradas-recuperar-ventas-ticketera-argentina",
+      "title": "Carrito Abandonado en Entradas: Como Recuperar Ventas Perdidas",
+      "metaDescription": "Como recuperar carritos abandonados en entradas: que lo causa, como medir abandono y recuperacion, framework paso a paso, emails listos y checklist.",
+      "targetKeyword": "carrito abandonado tickets",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2600,
+      "publishedAt": "2026-02-24",
+      "lastModified": "2026-02-24",
+      "metrics": {
+        "impressions": 1900,
+        "clicks": 28,
+        "position": 13.2,
+        "ctr": 0.0147,
+        "conversions": 1,
+        "conversionRate": 0.0357
+      }
+    },
+    {
+      "id": "page_015",
+      "url": "/blog/email-marketing-para-eventos-envios-que-funcionan-argentina",
+      "title": "Email Marketing para Eventos: Calendario y Envios que Venden Hoy",
+      "metaDescription": "Que emails funcionan hoy para eventos en Argentina: calendario de envios, 10 emails clave, segmentacion, KPIs y 4 plantillas listas.",
+      "targetKeyword": "email marketing eventos",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 3100,
+      "publishedAt": "2026-02-17",
+      "lastModified": "2026-02-17",
+      "metrics": {
+        "impressions": 3400,
+        "clicks": 120,
+        "position": 7.8,
+        "ctr": 0.0353,
+        "conversions": 5,
+        "conversionRate": 0.0417
+      }
+    },
+    {
+      "id": "page_016",
+      "url": "/blog/landing-page-para-eventos-estructura-que-convierte-argentina",
+      "title": "Landing Page para Eventos: Estructura Exacta que Vende Entradas",
+      "metaDescription": "Guia para Argentina: estructura exacta de landing page para eventos, copy y UX que convierten + checklist de 25 puntos y errores comunes.",
+      "targetKeyword": "landing page eventos",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2900,
+      "publishedAt": "2026-02-12",
+      "lastModified": "2026-02-12",
+      "metrics": {
+        "impressions": 2100,
+        "clicks": 28,
+        "position": 14.6,
+        "ctr": 0.0133,
+        "conversions": 0,
+        "conversionRate": 0.0
+      }
+    },
+    {
+      "id": "page_017",
+      "url": "/blog/medir-exito-de-eventos-kpis-plantilla-argentina",
+      "title": "Como Medir el Exito de Eventos: KPIs Clave + Plantilla",
+      "metaDescription": "Aprende a medir el exito de eventos en Argentina: asistencia real, velocidad de venta, NPS y recompra. Incluye formulas y plantilla de KPIs.",
+      "targetKeyword": "kpis eventos",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2400,
+      "publishedAt": "2026-02-15",
+      "lastModified": "2026-02-15",
+      "metrics": {
+        "impressions": 1800,
+        "clicks": 45,
+        "position": 8.9,
+        "ctr": 0.0250,
+        "conversions": 2,
+        "conversionRate": 0.0444
+      }
+    },
+    {
+      "id": "page_018",
+      "url": "/blog/tipos-de-eventos-argentina",
+      "title": "Tipos de eventos: guia completa para organizadores 2025",
+      "metaDescription": "Guia 2025 de tipos de eventos en Argentina: sociales, culturales, recitales, workshops, festivales, ferias, corporativos y mas.",
+      "targetKeyword": "tipos de eventos",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 4800,
+      "publishedAt": "2025-11-28",
+      "lastModified": "2025-11-28",
+      "metrics": {
+        "impressions": 5200,
+        "clicks": 38,
+        "position": 16.3,
+        "ctr": 0.0073,
+        "conversions": 1,
+        "conversionRate": 0.0263
+      }
+    },
+    {
+      "id": "page_019",
+      "url": "/blog/ideas-patrocinio-eventos-argentina",
+      "title": "Ideas de patrocinio para eventos en Argentina 2025",
+      "metaDescription": "Aprende 30 ideas de patrocinio para eventos en Argentina, con ejemplos reales y tips para negociar sponsors usando Fanz como ticketera marca blanca.",
+      "targetKeyword": "ideas patrocinio eventos",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 3800,
+      "publishedAt": "2025-11-25",
+      "lastModified": "2025-11-25",
+      "metrics": {
+        "impressions": 2900,
+        "clicks": 78,
+        "position": 9.3,
+        "ctr": 0.0269,
+        "conversions": 3,
+        "conversionRate": 0.0385
+      }
+    },
+    {
+      "id": "page_020",
+      "url": "/blog/marketing-eventos-2025-guia-estrategias",
+      "title": "Marketing para Eventos 2025: Guia Definitiva con Estrategias",
+      "metaDescription": "Estrategias de marketing para eventos: desde storytelling hasta conversion. Guia definitiva con tacticas probadas para vender mas entradas en Argentina.",
+      "targetKeyword": "marketing para eventos",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 4100,
+      "publishedAt": "2025-09-23",
+      "lastModified": "2025-09-23",
+      "metrics": {
+        "impressions": 4100,
+        "clicks": 180,
+        "position": 6.4,
+        "ctr": 0.0439,
+        "conversions": 7,
+        "conversionRate": 0.0389
+      }
+    },
+    {
+      "id": "page_021",
+      "url": "/blog/futuro-ticketing-argentina-ia-marca-blanca-2025",
+      "title": "Futuro del Ticketing en Argentina: IA y Marca Blanca 2025",
+      "metaDescription": "Futuro del ticketing Argentina 2025: IA, remarketing automatico, marca blanca, integracion Mercado Pago. Tecnologia que transforma venta de entradas.",
+      "targetKeyword": "futuro ticketing argentina",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2200,
+      "publishedAt": "2025-10-15",
+      "lastModified": "2025-10-15",
+      "metrics": {
+        "impressions": 380,
+        "clicks": 4,
+        "position": 19.1,
+        "ctr": 0.0105,
+        "conversions": 0,
+        "conversionRate": 0.0
+      }
+    },
+    {
+      "id": "page_022",
+      "url": "/blog/tendencias-ticketing-2025-argentina",
+      "title": "Tendencias Ticketing 2025 Argentina: IA, Marca Blanca y Mas",
+      "metaDescription": "Tendencias ticketing 2025 en Argentina: inteligencia artificial, marca blanca, Mercado Pago y QR. Analisis completo de innovacion en venta de entradas.",
+      "targetKeyword": "tendencias ticketing 2025",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2600,
+      "publishedAt": "2025-09-17",
+      "lastModified": "2025-09-17",
+      "metrics": {
+        "impressions": 1500,
+        "clicks": 42,
+        "position": 8.2,
+        "ctr": 0.0280,
+        "conversions": 2,
+        "conversionRate": 0.0476
+      }
+    },
+    {
+      "id": "page_023",
+      "url": "/blog/cancelacion-de-eventos",
+      "title": "Cancelacion de eventos: como manejarla sin danar tu marca",
+      "metaDescription": "Aprende a manejar la cancelacion de eventos sin danar tu marca. Como comunicar, gestionar y proteger tu reputacion como organizador en Argentina.",
+      "targetKeyword": "cancelar evento argentina",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 1900,
+      "publishedAt": "2026-01-07",
+      "lastModified": "2026-01-07",
+      "metrics": {
+        "impressions": 1100,
+        "clicks": 18,
+        "position": 12.8,
+        "ctr": 0.0164,
+        "conversions": 1,
+        "conversionRate": 0.0556
+      }
+    },
+    {
+      "id": "page_024",
+      "url": "/blog/seguro-de-entradas",
+      "title": "Seguro de entradas: que es, cuando ofrecerlo y como comunicarlo",
+      "metaDescription": "Descubri que es un seguro de entradas, en que eventos conviene ofrecerlo y como comunicarlo sin afectar tus ventas. Guia completa para organizadores.",
+      "targetKeyword": "seguro de entradas",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 1700,
+      "publishedAt": "2026-01-14",
+      "lastModified": "2026-01-14",
+      "metrics": {
+        "impressions": 620,
+        "clicks": 6,
+        "position": 15.7,
+        "ctr": 0.0097,
+        "conversions": 0,
+        "conversionRate": 0.0
+      }
+    },
+    {
+      "id": "page_025",
+      "url": "/blog/planificacion-de-eventos",
+      "title": "Planificacion de eventos: guia completa paso a paso para 2025",
+      "metaDescription": "Aprende a planificar eventos profesionalmente. Fases, presupuesto, logistica, venta de entradas, checklist completo y errores a evitar.",
+      "targetKeyword": "planificacion eventos",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 4400,
+      "publishedAt": "2026-01-20",
+      "lastModified": "2026-01-20",
+      "metrics": {
+        "impressions": 4200,
+        "clicks": 78,
+        "position": 11.2,
+        "ctr": 0.0186,
+        "conversions": 2,
+        "conversionRate": 0.0256
+      }
+    },
+    {
+      "id": "page_026",
+      "url": "/blog/preventa-de-entradas-argentina-fanz-2025",
+      "title": "Preventa de entradas 2025: guia para organizadores en Argentina",
+      "metaDescription": "Guia de preventa de entradas en Argentina: como segmentar por grupos, horarios, codigos y stock. Vende desde tu dominio con Fanz y ordena la demanda.",
+      "targetKeyword": "preventa de entradas argentina",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 5800,
+      "publishedAt": "2025-12-24",
+      "lastModified": "2025-12-24",
+      "metrics": {
+        "impressions": 3600,
+        "clicks": 84,
+        "position": 9.1,
+        "ctr": 0.0233,
+        "conversions": 3,
+        "conversionRate": 0.0357
+      }
+    },
+    {
+      "id": "page_027",
+      "url": "/blog/venta-con-ia",
+      "title": "Venta con IA: Que Es, Como Funciona y Que Esperar en Ticketing",
+      "metaDescription": "Analizamos que es la venta con IA, como se usa en venta de entradas y cuando realmente funciona. Remarketing, chatbots y automatizacion.",
+      "targetKeyword": "venta entradas con ia",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 2300,
+      "publishedAt": "2026-02-05",
+      "lastModified": "2026-02-05",
+      "metrics": {
+        "impressions": 1200,
+        "clicks": 65,
+        "position": 5.8,
+        "ctr": 0.0542,
+        "conversions": 4,
+        "conversionRate": 0.0615
+      }
+    },
+    {
+      "id": "page_028",
+      "url": "/blog/vender-entradas-online-argentina",
+      "title": "Como Vender Entradas Online en Argentina - Guia Fanz 2025",
+      "metaDescription": "Guia completa para vender entradas online en Argentina. Las 5 razones por las que no vendes tickets y como Fanz soluciona cada problema.",
+      "targetKeyword": "vender entradas online argentina",
+      "intent": "transactional",
+      "audience": "b2b_organizers",
+      "wordCount": 3200,
+      "publishedAt": "2025-09-30",
+      "lastModified": "2025-09-30",
+      "metrics": {
+        "impressions": 9800,
+        "clicks": 720,
+        "position": 4.1,
+        "ctr": 0.0735,
+        "conversions": 24,
+        "conversionRate": 0.0333
+      }
+    },
+    {
+      "id": "page_029",
+      "url": "/blog/ticketera-argentina-fanz",
+      "title": "Que es una ticketera y por que Fanz es la ticketera argentina que necesitas",
+      "metaDescription": "Descubri que hace una ticketera, como vender entradas online con dominio propio y por que Fanz, plataforma argentina, multiplica tus ventas.",
+      "targetKeyword": "que es una ticketera",
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "wordCount": 3000,
+      "publishedAt": "2025-05-05",
+      "lastModified": "2025-05-05",
+      "metrics": {
+        "impressions": 11200,
+        "clicks": 950,
+        "position": 3.9,
+        "ctr": 0.0848,
+        "conversions": 28,
+        "conversionRate": 0.0295
+      }
+    },
+    {
+      "id": "page_030",
+      "url": "/blog/crear-un-evento-paso-a-paso",
+      "title": "Como crear un evento online paso a paso: de cero a publicado en 10 min",
+      "metaDescription": "Aprende a publicar tu evento en Fanz: imagenes, precios, tickets y referidos en 10 min con capturas y tips para organizadores argentinos.",
+      "targetKeyword": "crear evento online",
+      "intent": "transactional",
+      "audience": "b2b_organizers",
+      "wordCount": 1800,
+      "publishedAt": "2025-06-17",
+      "lastModified": "2025-06-17",
+      "metrics": {
+        "impressions": 3800,
+        "clicks": 145,
+        "position": 7.2,
+        "ctr": 0.0382,
+        "conversions": 6,
+        "conversionRate": 0.0414
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "kw_001",
+      "keyword": "ticketera para teatro",
+      "monthlyVolume": 590,
+      "difficulty": 28,
+      "cpc": 1.40,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "passline.com"
+    },
+    {
+      "id": "kw_002",
+      "keyword": "ticketera para museos",
+      "monthlyVolume": 320,
+      "difficulty": 22,
+      "cpc": 1.20,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": null
+    },
+    {
+      "id": "kw_003",
+      "keyword": "ticketera para congresos",
+      "monthlyVolume": 280,
+      "difficulty": 25,
+      "cpc": 1.80,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "eventbrite.com.ar"
+    },
+    {
+      "id": "kw_004",
+      "keyword": "ticketera para universidades",
+      "monthlyVolume": 210,
+      "difficulty": 20,
+      "cpc": 1.10,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": null
+    },
+    {
+      "id": "kw_005",
+      "keyword": "ticketera para stand up",
+      "monthlyVolume": 480,
+      "difficulty": 26,
+      "cpc": 1.30,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "passline.com"
+    },
+    {
+      "id": "kw_006",
+      "keyword": "sistema de cupones para eventos",
+      "monthlyVolume": 390,
+      "difficulty": 32,
+      "cpc": 2.10,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "eventbrite.com.ar"
+    },
+    {
+      "id": "kw_007",
+      "keyword": "api de ticketing argentina",
+      "monthlyVolume": 140,
+      "difficulty": 18,
+      "cpc": 3.20,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": null
+    },
+    {
+      "id": "kw_008",
+      "keyword": "ticketera para festivales",
+      "monthlyVolume": 720,
+      "difficulty": 38,
+      "cpc": 1.60,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "passline.com"
+    },
+    {
+      "id": "kw_009",
+      "keyword": "control de acceso QR eventos",
+      "monthlyVolume": 540,
+      "difficulty": 24,
+      "cpc": 1.50,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "livepass.com"
+    },
+    {
+      "id": "kw_010",
+      "keyword": "alternativa a eventbrite argentina",
+      "monthlyVolume": 380,
+      "difficulty": 21,
+      "cpc": 2.40,
+      "intent": "commercial_comparison",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "passline.com"
+    },
+    {
+      "id": "kw_011",
+      "keyword": "ticketera marca blanca",
+      "monthlyVolume": 880,
+      "difficulty": 35,
+      "cpc": 2.20,
+      "intent": "transactional",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": "page_006",
+      "topCompetitor": "passline.com"
+    },
+    {
+      "id": "kw_012",
+      "keyword": "plataformas de ticketing argentina",
+      "monthlyVolume": 1100,
+      "difficulty": 42,
+      "cpc": 1.80,
+      "intent": "commercial_comparison",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": "page_001",
+      "topCompetitor": "ticketek.com.ar"
+    },
+    {
+      "id": "kw_013",
+      "keyword": "mejor ticketera argentina",
+      "monthlyVolume": 720,
+      "difficulty": 38,
+      "cpc": 1.90,
+      "intent": "commercial_comparison",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": "page_002",
+      "topCompetitor": "ticketek.com.ar"
+    },
+    {
+      "id": "kw_014",
+      "keyword": "ticketera con mercado pago",
+      "monthlyVolume": 1400,
+      "difficulty": 31,
+      "cpc": 2.50,
+      "intent": "transactional",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": "page_003",
+      "topCompetitor": "livepass.com"
+    },
+    {
+      "id": "kw_015",
+      "keyword": "preventa de entradas",
+      "monthlyVolume": 2400,
+      "difficulty": 45,
+      "cpc": 1.10,
+      "intent": "informational",
+      "audience": "mixed",
+      "currentlyRankingPageId": "page_011",
+      "topCompetitor": "ticketek.com.ar",
+      "_note": "Esta keyword esta cubierta dos veces: tambien por page_026"
+    },
+    {
+      "id": "kw_016",
+      "keyword": "vender entradas online argentina",
+      "monthlyVolume": 1800,
+      "difficulty": 36,
+      "cpc": 2.30,
+      "intent": "transactional",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": "page_028",
+      "topCompetitor": "passline.com"
+    },
+    {
+      "id": "kw_017",
+      "keyword": "que es una ticketera",
+      "monthlyVolume": 1200,
+      "difficulty": 18,
+      "cpc": 0.80,
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": "page_029",
+      "topCompetitor": null
+    },
+    {
+      "id": "kw_018",
+      "keyword": "ticketera con stripe argentina",
+      "monthlyVolume": 90,
+      "difficulty": 12,
+      "cpc": 3.40,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": null
+    },
+    {
+      "id": "kw_019",
+      "keyword": "ticketera para experiencias turisticas",
+      "monthlyVolume": 180,
+      "difficulty": 19,
+      "cpc": 1.40,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": null
+    },
+    {
+      "id": "kw_020",
+      "keyword": "software para productoras de eventos",
+      "monthlyVolume": 410,
+      "difficulty": 28,
+      "cpc": 2.80,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "eventbrite.com.ar"
+    },
+    {
+      "id": "kw_021",
+      "keyword": "entradas lollapalooza 2027",
+      "monthlyVolume": 18000,
+      "difficulty": 55,
+      "cpc": 0.40,
+      "intent": "transactional",
+      "audience": "b2c_buyers",
+      "currentlyRankingPageId": "page_010",
+      "topCompetitor": "ticketek.com.ar"
+    },
+    {
+      "id": "kw_022",
+      "keyword": "comprar entradas recital",
+      "monthlyVolume": 9600,
+      "difficulty": 48,
+      "cpc": 0.30,
+      "intent": "transactional",
+      "audience": "b2c_buyers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": "ticketek.com.ar"
+    },
+    {
+      "id": "kw_023",
+      "keyword": "eventos hibridos argentina",
+      "monthlyVolume": 290,
+      "difficulty": 24,
+      "cpc": 1.20,
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": "page_013",
+      "topCompetitor": null
+    },
+    {
+      "id": "kw_024",
+      "keyword": "landing page eventos",
+      "monthlyVolume": 480,
+      "difficulty": 30,
+      "cpc": 1.70,
+      "intent": "informational",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": "page_016",
+      "topCompetitor": "livepass.com"
+    },
+    {
+      "id": "kw_025",
+      "keyword": "ticketera para cine al aire libre",
+      "monthlyVolume": 110,
+      "difficulty": 15,
+      "cpc": 1.10,
+      "intent": "commercial",
+      "audience": "b2b_organizers",
+      "currentlyRankingPageId": null,
+      "topCompetitor": null
+    }
+  ],
+  "competitors": [
+    {
+      "id": "comp_001",
+      "domain": "ticketek.com.ar",
+      "name": "Ticketek",
+      "positioning": "marketplace tradicional, foco en grandes eventos masivos",
+      "estimatedMonthlyTraffic": 850000,
+      "audience": "b2c_buyers",
+      "topTopics": ["entradas recital", "estadios", "festivales grandes", "comprar entradas"],
+      "topContentGaps": ["marca blanca", "ticketera teatro", "ticketera museos", "control de datos"],
+      "_note": "Lider del mercado pero apunta B2C. No es competidor directo de Fanz en intent comercial B2B."
+    },
+    {
+      "id": "comp_002",
+      "domain": "passline.com",
+      "name": "Passline",
+      "positioning": "ticketera multipropósito con base argentina y regional",
+      "estimatedMonthlyTraffic": 220000,
+      "audience": "mixed",
+      "topTopics": ["preventa entradas", "festivales", "marca blanca", "ticketera teatro", "ticketera stand up", "alternativa eventbrite"],
+      "topContentGaps": ["api ticketing", "ticketera museos", "ticketera congresos"],
+      "_note": "Competidor mas directo de Fanz. Cubre muchas keywords B2B."
+    },
+    {
+      "id": "comp_003",
+      "domain": "livepass.com",
+      "name": "Livepass",
+      "positioning": "ticketera argentina enfocada en eventos medianos",
+      "estimatedMonthlyTraffic": 95000,
+      "audience": "b2b_organizers",
+      "topTopics": ["control de acceso QR", "ticketera mercado pago", "landing page eventos"],
+      "topContentGaps": ["marca blanca real", "ticketera museos", "api ticketing", "ticketera universidades"],
+      "_note": "Competidor directo. Rankea mejor que Fanz para 'ticketera con mercado pago'."
+    },
+    {
+      "id": "comp_004",
+      "domain": "eventbrite.com.ar",
+      "name": "Eventbrite",
+      "positioning": "marketplace global con presencia local media",
+      "estimatedMonthlyTraffic": 320000,
+      "audience": "mixed",
+      "topTopics": ["sistema de cupones", "software productoras", "ticketera congresos", "eventos corporativos"],
+      "topContentGaps": ["marca blanca propia", "integracion mercado pago", "ticketera teatro argentina"],
+      "_note": "Competidor global. Genera muchas keywords 'alternativa eventbrite' que Fanz puede capturar."
+    },
+    {
+      "id": "comp_005",
+      "domain": "venti.com.ar",
+      "name": "Venti",
+      "positioning": "startup argentina enfocada en eventos chicos",
+      "estimatedMonthlyTraffic": 45000,
+      "audience": "b2b_organizers",
+      "topTopics": ["eventos chicos", "ticketera independiente", "venta online"],
+      "topContentGaps": ["marca blanca", "verticales especificos", "datos compradores"]
+    },
+    {
+      "id": "comp_006",
+      "domain": "entradaweb.com.ar",
+      "name": "EntradaWeb",
+      "positioning": "ticketera tradicional con base instalada vieja",
+      "estimatedMonthlyTraffic": 28000,
+      "audience": "b2b_organizers",
+      "topTopics": ["ticketera tradicional", "venta entradas"],
+      "topContentGaps": ["IA", "marca blanca moderna", "remarketing", "verticales nuevos"]
+    }
+  ],
+  "technicalIssues": [
+    {
+      "id": "issue_001",
+      "pageId": "page_005",
+      "type": "url_special_characters",
+      "severity": "high",
+      "details": "Slug contiene caracteres especiales (¿, tildes) que rompen en algunos buscadores y herramientas de analytics. Considerar redirect 301 a slug normalizado."
+    },
+    {
+      "id": "issue_002",
+      "pageId": "page_018",
+      "type": "low_ctr_high_impressions",
+      "severity": "high",
+      "details": "5200 impresiones con CTR 0.73% en posicion 16. Title o meta description probablemente no captan. Refrescar."
+    },
+    {
+      "id": "issue_003",
+      "pageId": "page_012",
+      "type": "url_special_characters",
+      "severity": "medium",
+      "details": "Slug contiene tildes (cómo, patrocinadores). Normalizar slug y redireccionar."
+    },
+    {
+      "id": "issue_004",
+      "pageId": "page_021",
+      "type": "dead_weight",
+      "severity": "medium",
+      "details": "Publicada hace 7 meses, 380 impresiones totales, posicion 19. Considerar consolidar con page_022 (tendencias ticketing) que cubre tema similar mejor."
+    },
+    {
+      "id": "issue_005",
+      "pageId": "page_024",
+      "type": "low_volume_keyword",
+      "severity": "low",
+      "details": "Keyword 'seguro de entradas' tiene volumen muy bajo. Mantener pero no priorizar optimizacion."
+    },
+    {
+      "id": "issue_006",
+      "pageId": "page_011",
+      "type": "duplicate_topic_coverage",
+      "severity": "high",
+      "details": "Tema 'preventa de entradas' cubierto tambien por page_026. Consolidar o diferenciar angulos para evitar canibalizacion."
+    },
+    {
+      "id": "issue_007",
+      "pageId": "page_026",
+      "type": "duplicate_topic_coverage",
+      "severity": "high",
+      "details": "Canibalizacion con page_011. Esta version es mas larga (5800 vs 2100 palabras) pero rankea peor (9.1 vs 9.8). Decidir cual mantener."
+    },
+    {
+      "id": "issue_008",
+      "pageId": "page_016",
+      "type": "low_ctr_optimization_target",
+      "severity": "medium",
+      "details": "Posicion 14.6, CTR 1.33%, cero conversiones. Buena candidata para refresh integral antes de bajar mas."
+    }
+  ]
+}

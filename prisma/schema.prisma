@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider = "zod-prisma-types"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Upload {
+  id          String   @id @default(cuid())
+  userId      String   // Authenticated Clerk User ID
+  description String?
+  currency    String?
+  generatedAt DateTime?
+  windowDays  Int?
+  
+  createdAt   DateTime @default(now())
+
+  // Relations
+  pages           Page[]
+  keywords        Keyword[]
+  competitors     Competitor[]
+  technicalIssues TechnicalIssue[]
+}
+
+model Page {
+  id              String   @id @default(cuid())
+  uploadId        String
+  upload          Upload   @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  sourceId        String   // The original ID from JSON (e.g., "page_001")
+  
+  url             String
+  title           String
+  metaDescription String?
+  targetKeyword   String?
+  intent          String?
+  audience        String?
+  wordCount       Int?
+  publishedAt     DateTime?
+  lastModified    DateTime?
+
+  metrics         Metrics?
+  technicalIssues TechnicalIssue[]
+  keywords        Keyword[] // Keywords ranking for this page
+}
+
+model Metrics {
+  id             String @id @default(cuid())
+  pageId         String @unique
+  page           Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  
+  impressions    Int?
+  clicks         Int?
+  position       Float?
+  ctr            Float?
+  conversions    Int?
+  conversionRate Float?
+}
+
+model Keyword {
+  id                     String  @id @default(cuid())
+  uploadId               String
+  upload                 Upload  @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  
+  keyword                String
+  monthlyVolume          Int?
+  difficulty             Int?
+  cpc                    Float?
+  intent                 String?
+  audience               String?
+  topCompetitor          String?
+
+  currentlyRankingPageId String? 
+  page                   Page?   @relation(fields: [currentlyRankingPageId], references: [id], onDelete: SetNull)
+}
+
+model Competitor {
+  id                      String  @id @default(cuid())
+  uploadId                String
+  upload                  Upload  @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  
+  domain                  String
+  name                    String?
+  positioning             String?
+  estimatedMonthlyTraffic Int?
+  audience                String?
+  topTopics               String[] // Requires PostgreSQL
+  topContentGaps          String[] // Requires PostgreSQL
+}
+
+model TechnicalIssue {
+  id       String @id @default(cuid())
+  uploadId String
+  upload   Upload @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  
+  pageId   String 
+  page     Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  
+  type     String
+  severity String
+  details  String
+}

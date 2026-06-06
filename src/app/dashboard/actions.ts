@@ -6,6 +6,12 @@ import { auth } from "@clerk/nextjs/server";
 
 export async function uploadDataAction(data: unknown) {
   try {
+    // If the JSON payload has a _meta object, hoist its properties to the root level
+    // so it matches the Zod schema expectation.
+    if (typeof data === 'object' && data !== null && '_meta' in data) {
+      Object.assign(data, (data as any)._meta);
+    }
+
     const parsed = UploadInputSchema.safeParse(data);
     if (!parsed.success) {
       return { success: false, error: "Validation failed: " + JSON.stringify(parsed.error.issues) };

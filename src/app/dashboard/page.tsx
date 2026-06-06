@@ -80,7 +80,7 @@ export default function DashboardPage() {
                       <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
                         <Sparkles className="w-12 h-12 mb-4 text-primary animate-pulse" />
                         <p className="text-sm font-semibold text-primary animate-pulse">
-                          Sprinkling some AI dust... ✨
+                          Parsing and storing data, this may take a while... ✨
                         </p>
                       </div>
                     ) : (

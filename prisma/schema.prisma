@@ -49,22 +49,16 @@ model Page {
   publishedAt     DateTime?
   lastModified    DateTime?
 
-  metrics         Metrics?
+  // Metrics
+  impressions     Int?
+  clicks          Int?
+  position        Float?
+  ctr             Float?
+  conversions     Int?
+  conversionRate  Float?
+
   technicalIssues TechnicalIssue[]
   keywords        Keyword[] // Keywords ranking for this page
-}
-
-model Metrics {
-  id             String @id @default(cuid())
-  pageId         String @unique
-  page           Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  
-  impressions    Int?
-  clicks         Int?
-  position       Float?
-  ctr            Float?
-  conversions    Int?
-  conversionRate Float?
 }
 
 model Keyword {

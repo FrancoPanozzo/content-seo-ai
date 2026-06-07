@@ -3,6 +3,7 @@
 import { UploadInputSchema } from "@/types";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { runAllSignals } from "@/signals";
 
 export async function uploadDataAction(data: unknown) {
   try {
@@ -114,10 +115,13 @@ export async function uploadDataAction(data: unknown) {
         await tx.competitor.createMany({ data: competitorData });
       }
 
-      // 5. Create Technical Issues
-      if (technicalIssues && technicalIssues.length > 0) {
+      // 5. Run signals & Create Technical Issues
+      const generatedIssues = runAllSignals(pageRecords as any);
+      const allIssues = [...(technicalIssues || []), ...generatedIssues];
+
+      if (allIssues && allIssues.length > 0) {
         const issueData = [];
-        for (const issue of technicalIssues) {
+        for (const issue of allIssues) {
           let dbPageId = null;
           if (issue.pageId) {
             const targetId = issue.pageId.trim();

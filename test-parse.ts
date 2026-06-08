@@ -7,13 +7,13 @@ const parsed = UploadInputSchema.safeParse(data);
 if (!parsed.success) {
   console.log("Error:", parsed.error);
 } else {
-  const { pages, keywords, technicalIssues } = parsed.data;
-  const pageRecords = [];
-  
+  const { pages, keywords } = parsed.data;
+  const pageRecords: Array<{ id: string; sourceId: string }> = [];
+
   if (pages) {
     for (let i = 0; i < pages.length; i++) {
       const p = pages[i];
-      const sourceId = p.id || p.sourceId || `page_${i}`;
+      const sourceId = p.id || `page_${i}`;
       pageRecords.push({ id: `cuid_${i}`, sourceId });
     }
   }
@@ -28,7 +28,6 @@ if (!parsed.success) {
         const matched = pageRecords.find(pr => pr.sourceId === k.currentlyRankingPageId || pr.id === k.currentlyRankingPageId);
         if (matched) {
           matchedCount++;
-          // console.log(`✅ Keyword matched: ${k.currentlyRankingPageId} -> ${matched.sourceId}`);
         } else {
           console.log(`❌ Keyword match failed: ${k.currentlyRankingPageId}`);
         }

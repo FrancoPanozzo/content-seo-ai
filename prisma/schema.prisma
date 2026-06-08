@@ -31,6 +31,7 @@ model Upload {
   keywords        Keyword[]
   competitors     Competitor[]
   technicalIssues TechnicalIssue[]
+  actions         Action[]
 }
 
 model Page {
@@ -103,4 +104,24 @@ model TechnicalIssue {
   type     String
   severity String
   details  String
+}
+
+model Action {
+  id           String   @id @default(cuid())
+  uploadId     String
+  upload       Upload   @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  
+  type         String   // Enforce: create_brief, optimize_page, resolve_issue, add_internal_links
+  title        String
+  reason       String
+  evidence     String
+  priority     String   // high, medium, low
+  confidence   Int      // 0-100
+  
+  status       String   @default("pending") // pending, approved, rejected, applied
+  rejectReason String?
+  
+  payload      Json     // Flexible JSON payload
+  
+  createdAt    DateTime @default(now())
 }

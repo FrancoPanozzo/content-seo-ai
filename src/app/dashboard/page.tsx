@@ -1,49 +1,90 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { uploadDataAction } from "./actions";
-import { UploadCloud, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
+import { generatePlanAction } from "./plan/actions";
+import { UploadCloud, CheckCircle2, AlertCircle, Sparkles, Loader2, Database, BrainCircuit } from "lucide-react";
+
+type UploadStep = 'idle' | 'storing' | 'planning' | 'success' | 'error';
 
 export default function DashboardPage() {
-  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState<UploadStep>('idle');
   const [message, setMessage] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [uploadedData, setUploadedData] = useState<any>(null);
+  const [uploadedData, setUploadedData] = useState<unknown>(null);
+  const [actionsGenerated, setActionsGenerated] = useState<any>(null);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (step === 'idle' || step === 'error') {
+      setProgress(0);
+      return;
+    }
+    
+    if (step === 'success') {
+      setProgress(100);
+      return;
+    }
+
+    if (step === 'storing') {
+      setProgress(p => Math.max(p, 5));
+    } else if (step === 'planning') {
+      setProgress(p => Math.max(p, 20));
+    }
+
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        const max = step === 'storing' ? 19 : 99;
+        if (prev >= max) return prev;
+        return prev + 1.2;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [step]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setLoading(true);
+    setStep('storing');
     setMessage("");
-    setIsSuccess(false);
     setUploadedData(null);
+    setActionsGenerated(null);
 
     try {
       const text = await file.text();
       const json = JSON.parse(text);
       
-      // Fake a 2 second loading time
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       const result = await uploadDataAction(json);
-      if (result.success) {
-        setIsSuccess(true);
-        setMessage("Data loaded successfully!");
+      if (result.success && result.uploadId) {
         setUploadedData(json);
+        
+        setStep('planning');
+        const planResult = await generatePlanAction(result.uploadId);
+        
+        if (planResult.success) {
+           setActionsGenerated(planResult.actions);
+           setStep('success');
+           setMessage("Data loaded and plan generated successfully!");
+        } else {
+           setStep('error');
+           setMessage(`Planning Failed: ${planResult.error}`);
+        }
       } else {
-        setIsSuccess(false);
+        setStep('error');
         setMessage(`Validation Failed: ${result.error}`);
       }
     } catch (error) {
       console.error(error);
-      setIsSuccess(false);
+      setStep('error');
       setMessage("Error reading or parsing the JSON file.");
     } finally {
-      setLoading(false);
       event.target.value = '';
     }
   };
+
+  const isProcessing = step === 'storing' || step === 'planning';
+  const isSuccess = step === 'success';
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-3xl mx-auto px-4 py-12">
@@ -59,7 +100,7 @@ export default function DashboardPage() {
                 Welcome to Content SEO AI
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                It looks like you don't have any data yet. Let's get started by importing your previous JSON backup.
+                It looks like you don&apos;t have any data yet. Let&apos;s get started by importing your previous JSON backup.
               </p>
             </div>
           </div>
@@ -71,17 +112,45 @@ export default function DashboardPage() {
               <div className="flex flex-col items-center justify-center w-full space-y-8">
                 
                 <label className={`
-                  flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-2xl cursor-pointer
+                  flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-2xl
                   transition-all duration-300 ease-in-out
-                  ${loading ? 'border-primary/50 bg-primary/5' : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5'}
+                  ${isProcessing ? 'border-primary/50 bg-primary/5 cursor-default' : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/5 cursor-pointer'}
                 `}>
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
-                    {loading ? (
-                      <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                        <Sparkles className="w-12 h-12 mb-4 text-primary animate-pulse" />
-                        <p className="text-sm font-semibold text-primary animate-pulse">
-                          Parsing and storing data, this may take a while... ✨
-                        </p>
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center w-full">
+                    {isProcessing ? (
+                      <div className="flex flex-col w-full max-w-sm px-6 animate-in fade-in zoom-in duration-500 space-y-6">
+                        <div className="w-full space-y-5 text-left">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-2.5 rounded-full shadow-sm ${step === 'storing' ? 'bg-primary/20 text-primary animate-pulse' : 'bg-emerald-500/20 text-emerald-500'}`}>
+                              {step === 'storing' ? <Database className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                            </div>
+                            <div className="flex-1">
+                              <p className={`font-semibold ${step === 'storing' ? 'text-primary' : 'text-emerald-500'}`}>Storing Data</p>
+                              <p className="text-xs text-muted-foreground">Parsing & saving records</p>
+                            </div>
+                            {step === 'storing' && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
+                          </div>
+
+                          <div className="flex items-center gap-4">
+                            <div className={`p-2.5 rounded-full shadow-sm ${step === 'planning' ? 'bg-primary/20 text-primary animate-pulse' : 'bg-muted text-muted-foreground'}`}>
+                              <BrainCircuit className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1">
+                              <p className={`font-semibold ${step === 'planning' ? 'text-primary' : 'text-muted-foreground'}`}>AI Planning</p>
+                              <p className="text-xs text-muted-foreground">Generating SEO strategy</p>
+                              {step === 'planning' && <p className="text-[11px] text-muted-foreground/70 mt-1 animate-pulse italic">This may take a minute or two...</p>}
+                            </div>
+                            {step === 'planning' && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
+                          </div>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="w-full h-2.5 bg-muted/50 rounded-full overflow-hidden shadow-inner">
+                          <div 
+                            className="h-full bg-primary transition-all duration-1000 ease-linear rounded-full" 
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center animate-in fade-in zoom-in duration-300">
@@ -98,11 +167,11 @@ export default function DashboardPage() {
                     className="hidden" 
                     accept=".json"
                     onChange={handleFileUpload}
-                    disabled={loading}
+                    disabled={isProcessing}
                   />
                 </label>
 
-                {message && !isSuccess && (
+                {message && step === 'error' && (
                   <div className="flex items-center gap-3 p-4 rounded-xl w-full text-sm font-medium border animate-in fade-in slide-in-from-bottom-4 bg-destructive/10 text-destructive border-destructive/20">
                     <AlertCircle className="h-5 w-5 shrink-0" />
                     <p className="break-words w-full">{message}</p>
@@ -116,21 +185,28 @@ export default function DashboardPage() {
 
       {isSuccess && uploadedData && (
         <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
             <div className="flex items-center gap-3">
-              <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">Live Data Preview</h2>
+              <div className="h-3 w-3 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.6)] animate-pulse" />
+              <h2 className="text-3xl font-extrabold tracking-tight text-foreground">Strategy Ready</h2>
             </div>
-            <div className="flex items-center gap-2 text-emerald-500 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20">
-              <CheckCircle2 className="h-4 w-4" />
-              <span className="text-sm font-medium">Successfully Processed</span>
+            <div className="flex items-center gap-2 text-emerald-500 bg-emerald-500/10 px-5 py-2.5 rounded-full border border-emerald-500/20 shadow-sm">
+              <CheckCircle2 className="h-5 w-5" />
+              <span className="text-sm font-semibold">{actionsGenerated?.length || 0} Actions Planned</span>
             </div>
           </div>
           <div className="relative rounded-2xl overflow-hidden border border-border bg-card shadow-2xl">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-primary" />
-            <pre className="p-6 overflow-auto max-h-[600px] text-xs font-mono text-muted-foreground leading-relaxed">
-              {JSON.stringify(uploadedData, null, 2)}
-            </pre>
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-500 via-primary to-emerald-500 bg-[length:200%_auto] animate-gradient" />
+            <div className="p-8">
+              <p className="text-muted-foreground mb-6">
+                Your data has been successfully imported and our AI has generated a complete SEO strategy plan. 
+                You can now review and manage these actions in your queue.
+              </p>
+              
+              <pre className="p-4 rounded-xl bg-muted/30 overflow-auto max-h-[300px] text-xs font-mono text-muted-foreground/80 leading-relaxed border border-border/50">
+                {JSON.stringify(actionsGenerated, null, 2)}
+              </pre>
+            </div>
           </div>
         </div>
       )}

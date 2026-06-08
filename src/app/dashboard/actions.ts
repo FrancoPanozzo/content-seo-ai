@@ -2,15 +2,17 @@
 
 import { UploadInputSchema } from "@/types";
 import { prisma } from "@/lib/prisma";
+import { Page } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { runAllSignals } from "@/signals";
+
 
 export async function uploadDataAction(data: unknown) {
   try {
     // If the JSON payload has a _meta object, hoist its properties to the root level
     // so it matches the Zod schema expectation.
     if (typeof data === 'object' && data !== null && '_meta' in data) {
-      Object.assign(data, (data as any)._meta);
+      Object.assign(data, (data as { _meta?: unknown })._meta);
     }
 
     const parsed = UploadInputSchema.safeParse(data);
@@ -25,7 +27,7 @@ export async function uploadDataAction(data: unknown) {
 
     const { pages, keywords, competitors, technicalIssues, ...uploadFields } = parsed.data;
 
-    await prisma.$transaction(async (tx) => {
+    const createdUploadId = await prisma.$transaction(async (tx) => {
       // 1. Create Upload
       const upload = await tx.upload.create({
         data: {
@@ -38,14 +40,14 @@ export async function uploadDataAction(data: unknown) {
       });
 
       // 2. Create Pages
-      const pageRecords = [];
+      const pageRecords: Page[] = [];
       if (pages && pages.length > 0) {
         for (let i = 0; i < pages.length; i++) {
           const p = pages[i];
           const record = await tx.page.create({
             data: {
               uploadId: upload.id,
-              sourceId: p.id || p.sourceId || `page_${i}`,
+              sourceId: (p as { id?: string }).id || `page_${i}`,
               url: p.url || `https://example.com/page_${i}`,
               title: p.title || "Untitled Page",
               metaDescription: p.metaDescription || null,
@@ -116,7 +118,7 @@ export async function uploadDataAction(data: unknown) {
       }
 
       // 5. Run signals & Create Technical Issues
-      const generatedIssues = runAllSignals(pageRecords as any);
+      const generatedIssues = runAllSignals(pageRecords);
       const allIssues = [...(technicalIssues || []), ...generatedIssues];
 
       if (allIssues && allIssues.length > 0) {
@@ -156,12 +158,14 @@ export async function uploadDataAction(data: unknown) {
           await tx.technicalIssue.createMany({ data: issueData });
         }
       }
+
+      return upload.id;
     });
 
-    return { success: true };
-  } catch (error: any) {
+    return { success: true, uploadId: createdUploadId };
+  } catch (error: unknown) {
     console.error(error);
-    return { success: false, error: error?.message || "Unknown error" };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
 
@@ -184,8 +188,8 @@ export async function deleteAllDataAction() {
     ]);
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    return { success: false, error: error?.message || "Unknown error" };
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }

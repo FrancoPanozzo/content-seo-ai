@@ -5,7 +5,7 @@ import { Trash2 } from "lucide-react";
 import { deleteAllDataAction } from "../actions";
 import {
   AlertDialog,
-  AlertDialogAction,
+
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,

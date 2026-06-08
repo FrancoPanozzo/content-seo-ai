@@ -5,6 +5,7 @@ import {
   KeywordSchema,
   CompetitorSchema,
   TechnicalIssueSchema,
+  ActionSchema,
 } from '@prisma/generated/zod';
 
 export type Upload = z.infer<typeof UploadSchema>;
@@ -12,6 +13,7 @@ export type Page = z.infer<typeof PageSchema>;
 export type Keyword = z.infer<typeof KeywordSchema>;
 export type Competitor = z.infer<typeof CompetitorSchema>;
 export type TechnicalIssue = z.infer<typeof TechnicalIssueSchema>;
+export type Action = z.infer<typeof ActionSchema>;
 
 export const TechnicalIssueTypeEnum = z.enum([
   'url_special_characters',

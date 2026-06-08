@@ -21,7 +21,12 @@ export const TechnicalIssueTypeEnum = z.enum([
   'dead_weight',
   'low_volume_keyword',
   'duplicate_topic_coverage',
-  'low_ctr_optimization_target'
+  'low_ctr_optimization_target',
+  'striking_distance',
+  'clicks_without_conversions',
+  'keyword_gap',
+  'competitor_gap',
+  'b2c_audience_mismatch'
 ]);
 
 export type TechnicalIssueType = z.infer<typeof TechnicalIssueTypeEnum>;

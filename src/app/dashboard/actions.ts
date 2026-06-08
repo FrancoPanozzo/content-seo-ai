@@ -118,7 +118,7 @@ export async function uploadDataAction(data: unknown) {
       }
 
       // 5. Run signals & Create Technical Issues
-      const generatedIssues = runAllSignals(pageRecords);
+      const generatedIssues = runAllSignals(pageRecords, (keywords as any) || [], (competitors as any) || []);
       const allIssues = [...(technicalIssues || []), ...generatedIssues];
 
       if (allIssues && allIssues.length > 0) {

@@ -178,13 +178,14 @@ export async function deleteAllDataAction() {
 
     // Since Upload is the root and relations have onDelete: Cascade,
     // deleting all uploads will cascade to pages, keywords, etc.
-    // However, to be safe, we delete them all.
+    // However, to be safe, we delete them all for the current user.
     await prisma.$transaction([
-      prisma.technicalIssue.deleteMany(),
-      prisma.keyword.deleteMany(),
-      prisma.competitor.deleteMany(),
-      prisma.page.deleteMany(),
-      prisma.upload.deleteMany(),
+      prisma.technicalIssue.deleteMany({ where: { upload: { userId: _authUserId } } }),
+      prisma.keyword.deleteMany({ where: { upload: { userId: _authUserId } } }),
+      prisma.competitor.deleteMany({ where: { upload: { userId: _authUserId } } }),
+      prisma.page.deleteMany({ where: { upload: { userId: _authUserId } } }),
+      prisma.action.deleteMany({ where: { upload: { userId: _authUserId } } }),
+      prisma.upload.deleteMany({ where: { userId: _authUserId } }),
     ]);
 
     return { success: true };

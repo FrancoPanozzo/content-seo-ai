@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Key, Target, AlertTriangle } from "lucide-react";
+import { FileText, Key, Target, AlertTriangle, PlayCircle } from "lucide-react";
 import { SortableTable } from "./SortableTable";
 
 const TableHeader = ({ title, icon: Icon, description }: { title: string, icon: React.ElementType, description: string }) => (
@@ -71,14 +71,24 @@ interface TechnicalIssueData {
   _severityWeight: number;
 }
 
+interface ActionData {
+  id: string;
+  type: string;
+  title: string;
+  status: string;
+  priority: string;
+  payload: any;
+}
+
 interface DataTablesProps {
   pages: PageData[];
   keywords: KeywordData[];
   competitors: CompetitorData[];
   technicalIssues: Omit<TechnicalIssueData, '_severityWeight'>[];
+  actions: ActionData[];
 }
 
-export function DataTables({ pages, keywords, competitors, technicalIssues }: DataTablesProps) {
+export function DataTables({ pages, keywords, competitors, technicalIssues, actions }: DataTablesProps) {
   return (
     <>
       {/* Pages Table */}
@@ -265,6 +275,66 @@ export function DataTables({ pages, keywords, competitors, technicalIssues }: Da
             }
           ]}
           emptyMessage="No technical issues found"
+        />
+      </div>
+      {/* Actions Table */}
+      <div className="space-y-4">
+        <TableHeader title="Actions & Dry Runs" icon={PlayCircle} description="System-generated actions and simulated execution outcomes." />
+        <SortableTable<ActionData>
+          data={actions}
+          defaultSortKey="title"
+          columns={[
+            {
+              header: "Title",
+              accessorKey: "title",
+              cell: (row) => <div className="font-medium">{row.title}</div>
+            },
+            {
+              header: "Type",
+              accessorKey: "type",
+            },
+            {
+              header: "Priority",
+              accessorKey: "priority",
+              cell: (row) => (
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  row.priority === 'high' ? 'bg-destructive/10 text-destructive' :
+                  row.priority === 'medium' ? 'bg-orange-500/10 text-orange-500' :
+                  'bg-emerald-500/10 text-emerald-500'
+                }`}>
+                  {row.priority}
+                </span>
+              )
+            },
+            {
+              header: "Status",
+              accessorKey: "status",
+              cell: (row) => (
+                <span className={`px-2 py-1 rounded-full text-xs font-medium border ${
+                  row.status === 'applied' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+                  row.status === 'pending' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
+                  'bg-muted text-muted-foreground border-border'
+                }`}>
+                  {row.status}
+                </span>
+              )
+            },
+            {
+              header: "Dry Run Result",
+              accessorKey: "payload",
+              cell: (row) => {
+                const dryRun = row.payload?.dryRunResult;
+                if (!dryRun) return <span className="text-muted-foreground italic">None</span>;
+                return (
+                  <div className="max-w-md">
+                    <div className="text-sm font-medium mb-1">{dryRun.status}</div>
+                    {dryRun.message && <div className="text-xs text-muted-foreground truncate" title={dryRun.message}>{dryRun.message}</div>}
+                  </div>
+                );
+              }
+            }
+          ]}
+          emptyMessage="No actions found"
         />
       </div>
     </>

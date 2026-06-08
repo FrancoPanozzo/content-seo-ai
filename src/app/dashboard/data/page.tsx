@@ -2,9 +2,14 @@ import { prisma } from "@/lib/prisma";
 import { Database, FileText, Key, Target, AlertTriangle } from "lucide-react";
 import { ClearDataButton } from "./ClearDataButton";
 import { DataTables } from "./DataTables";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export default async function DataPage() {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
   const uploads = await prisma.upload.findMany({
+    where: { userId },
     include: {
       _count: { select: { pages: true, keywords: true, competitors: true, technicalIssues: true } },
     },
@@ -13,14 +18,16 @@ export default async function DataPage() {
   });
 
   const pages = await prisma.page.findMany({
+    where: { upload: { userId } },
     include: {
       _count: { select: { technicalIssues: true, keywords: true } }
     }
   });
 
-  const keywords = await prisma.keyword.findMany();
-  const competitors = await prisma.competitor.findMany();
-  const technicalIssues = await prisma.technicalIssue.findMany();
+  const keywords = await prisma.keyword.findMany({ where: { upload: { userId } } });
+  const competitors = await prisma.competitor.findMany({ where: { upload: { userId } } });
+  const technicalIssues = await prisma.technicalIssue.findMany({ where: { upload: { userId } } });
+  const actions = await prisma.action.findMany({ where: { upload: { userId } } });
 
   const recentUpload = uploads[0];
 
@@ -88,6 +95,7 @@ export default async function DataPage() {
           keywords={keywords}
           competitors={competitors}
           technicalIssues={technicalIssues}
+          actions={actions}
         />
 
       </div>

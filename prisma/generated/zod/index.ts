@@ -68,6 +68,8 @@ export const TechnicalIssueScalarFieldEnumSchema = z.enum(['id','uploadId','page
 
 export const ActionScalarFieldEnumSchema = z.enum(['id','uploadId','type','title','reason','evidence','priority','confidence','status','rejectReason','payload','createdAt']);
 
+export const LlmLogScalarFieldEnumSchema = z.enum(['id','uploadId','agentName','prompt','contextPayload','rawOutput','latencyMs','createdAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema: z.ZodType<Prisma.JsonNullValueInput> = z.enum(['JsonNull',]).transform((value) => (value === 'JsonNull' ? Prisma.JsonNull : value));
@@ -198,6 +200,23 @@ export const ActionSchema = z.object({
 export type Action = z.infer<typeof ActionSchema>
 
 /////////////////////////////////////////
+// LLM LOG SCHEMA
+/////////////////////////////////////////
+
+export const LlmLogSchema = z.object({
+  id: z.cuid(),
+  uploadId: z.string(),
+  agentName: z.string(),
+  prompt: z.string(),
+  contextPayload: JsonValueSchema,
+  rawOutput: z.string(),
+  latencyMs: z.number().int(),
+  createdAt: z.coerce.date(),
+})
+
+export type LlmLog = z.infer<typeof LlmLogSchema>
+
+/////////////////////////////////////////
 // SELECT & INCLUDE
 /////////////////////////////////////////
 
@@ -210,6 +229,7 @@ export const UploadIncludeSchema: z.ZodType<Prisma.UploadInclude> = z.object({
   competitors: z.union([z.boolean(),z.lazy(() => CompetitorFindManyArgsSchema)]).optional(),
   technicalIssues: z.union([z.boolean(),z.lazy(() => TechnicalIssueFindManyArgsSchema)]).optional(),
   actions: z.union([z.boolean(),z.lazy(() => ActionFindManyArgsSchema)]).optional(),
+  llmLogs: z.union([z.boolean(),z.lazy(() => LlmLogFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UploadCountOutputTypeArgsSchema)]).optional(),
 }).strict();
 
@@ -228,6 +248,7 @@ export const UploadCountOutputTypeSelectSchema: z.ZodType<Prisma.UploadCountOutp
   competitors: z.boolean().optional(),
   technicalIssues: z.boolean().optional(),
   actions: z.boolean().optional(),
+  llmLogs: z.boolean().optional(),
 }).strict();
 
 export const UploadSelectSchema: z.ZodType<Prisma.UploadSelect> = z.object({
@@ -243,6 +264,7 @@ export const UploadSelectSchema: z.ZodType<Prisma.UploadSelect> = z.object({
   competitors: z.union([z.boolean(),z.lazy(() => CompetitorFindManyArgsSchema)]).optional(),
   technicalIssues: z.union([z.boolean(),z.lazy(() => TechnicalIssueFindManyArgsSchema)]).optional(),
   actions: z.union([z.boolean(),z.lazy(() => ActionFindManyArgsSchema)]).optional(),
+  llmLogs: z.union([z.boolean(),z.lazy(() => LlmLogFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => UploadCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -400,6 +422,30 @@ export const ActionSelectSchema: z.ZodType<Prisma.ActionSelect> = z.object({
   upload: z.union([z.boolean(),z.lazy(() => UploadArgsSchema)]).optional(),
 }).strict()
 
+// LLM LOG
+//------------------------------------------------------
+
+export const LlmLogIncludeSchema: z.ZodType<Prisma.LlmLogInclude> = z.object({
+  upload: z.union([z.boolean(),z.lazy(() => UploadArgsSchema)]).optional(),
+}).strict();
+
+export const LlmLogArgsSchema: z.ZodType<Prisma.LlmLogDefaultArgs> = z.object({
+  select: z.lazy(() => LlmLogSelectSchema).optional(),
+  include: z.lazy(() => LlmLogIncludeSchema).optional(),
+}).strict();
+
+export const LlmLogSelectSchema: z.ZodType<Prisma.LlmLogSelect> = z.object({
+  id: z.boolean().optional(),
+  uploadId: z.boolean().optional(),
+  agentName: z.boolean().optional(),
+  prompt: z.boolean().optional(),
+  contextPayload: z.boolean().optional(),
+  rawOutput: z.boolean().optional(),
+  latencyMs: z.boolean().optional(),
+  createdAt: z.boolean().optional(),
+  upload: z.union([z.boolean(),z.lazy(() => UploadArgsSchema)]).optional(),
+}).strict()
+
 
 /////////////////////////////////////////
 // INPUT TYPES
@@ -421,6 +467,7 @@ export const UploadWhereInputSchema: z.ZodType<Prisma.UploadWhereInput> = z.stri
   competitors: z.lazy(() => CompetitorListRelationFilterSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueListRelationFilterSchema).optional(),
   actions: z.lazy(() => ActionListRelationFilterSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogListRelationFilterSchema).optional(),
 });
 
 export const UploadOrderByWithRelationInputSchema: z.ZodType<Prisma.UploadOrderByWithRelationInput> = z.strictObject({
@@ -436,6 +483,7 @@ export const UploadOrderByWithRelationInputSchema: z.ZodType<Prisma.UploadOrderB
   competitors: z.lazy(() => CompetitorOrderByRelationAggregateInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueOrderByRelationAggregateInputSchema).optional(),
   actions: z.lazy(() => ActionOrderByRelationAggregateInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogOrderByRelationAggregateInputSchema).optional(),
 });
 
 export const UploadWhereUniqueInputSchema: z.ZodType<Prisma.UploadWhereUniqueInput> = z.object({
@@ -457,6 +505,7 @@ export const UploadWhereUniqueInputSchema: z.ZodType<Prisma.UploadWhereUniqueInp
   competitors: z.lazy(() => CompetitorListRelationFilterSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueListRelationFilterSchema).optional(),
   actions: z.lazy(() => ActionListRelationFilterSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogListRelationFilterSchema).optional(),
 }));
 
 export const UploadOrderByWithAggregationInputSchema: z.ZodType<Prisma.UploadOrderByWithAggregationInput> = z.strictObject({
@@ -947,6 +996,81 @@ export const ActionScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Action
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema), z.coerce.date() ]).optional(),
 });
 
+export const LlmLogWhereInputSchema: z.ZodType<Prisma.LlmLogWhereInput> = z.strictObject({
+  AND: z.union([ z.lazy(() => LlmLogWhereInputSchema), z.lazy(() => LlmLogWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => LlmLogWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => LlmLogWhereInputSchema), z.lazy(() => LlmLogWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  uploadId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  agentName: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  prompt: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  contextPayload: z.lazy(() => JsonFilterSchema).optional(),
+  rawOutput: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  latencyMs: z.union([ z.lazy(() => IntFilterSchema), z.number() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
+  upload: z.union([ z.lazy(() => UploadScalarRelationFilterSchema), z.lazy(() => UploadWhereInputSchema) ]).optional(),
+});
+
+export const LlmLogOrderByWithRelationInputSchema: z.ZodType<Prisma.LlmLogOrderByWithRelationInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  uploadId: z.lazy(() => SortOrderSchema).optional(),
+  agentName: z.lazy(() => SortOrderSchema).optional(),
+  prompt: z.lazy(() => SortOrderSchema).optional(),
+  contextPayload: z.lazy(() => SortOrderSchema).optional(),
+  rawOutput: z.lazy(() => SortOrderSchema).optional(),
+  latencyMs: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  upload: z.lazy(() => UploadOrderByWithRelationInputSchema).optional(),
+});
+
+export const LlmLogWhereUniqueInputSchema: z.ZodType<Prisma.LlmLogWhereUniqueInput> = z.object({
+  id: z.cuid(),
+})
+.and(z.strictObject({
+  id: z.cuid().optional(),
+  AND: z.union([ z.lazy(() => LlmLogWhereInputSchema), z.lazy(() => LlmLogWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => LlmLogWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => LlmLogWhereInputSchema), z.lazy(() => LlmLogWhereInputSchema).array() ]).optional(),
+  uploadId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  agentName: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  prompt: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  contextPayload: z.lazy(() => JsonFilterSchema).optional(),
+  rawOutput: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  latencyMs: z.union([ z.lazy(() => IntFilterSchema), z.number().int() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
+  upload: z.union([ z.lazy(() => UploadScalarRelationFilterSchema), z.lazy(() => UploadWhereInputSchema) ]).optional(),
+}));
+
+export const LlmLogOrderByWithAggregationInputSchema: z.ZodType<Prisma.LlmLogOrderByWithAggregationInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  uploadId: z.lazy(() => SortOrderSchema).optional(),
+  agentName: z.lazy(() => SortOrderSchema).optional(),
+  prompt: z.lazy(() => SortOrderSchema).optional(),
+  contextPayload: z.lazy(() => SortOrderSchema).optional(),
+  rawOutput: z.lazy(() => SortOrderSchema).optional(),
+  latencyMs: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => LlmLogCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => LlmLogAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => LlmLogMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => LlmLogMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => LlmLogSumOrderByAggregateInputSchema).optional(),
+});
+
+export const LlmLogScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.LlmLogScalarWhereWithAggregatesInput> = z.strictObject({
+  AND: z.union([ z.lazy(() => LlmLogScalarWhereWithAggregatesInputSchema), z.lazy(() => LlmLogScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => LlmLogScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => LlmLogScalarWhereWithAggregatesInputSchema), z.lazy(() => LlmLogScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
+  uploadId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
+  agentName: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
+  prompt: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
+  contextPayload: z.lazy(() => JsonWithAggregatesFilterSchema).optional(),
+  rawOutput: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
+  latencyMs: z.union([ z.lazy(() => IntWithAggregatesFilterSchema), z.number() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema), z.coerce.date() ]).optional(),
+});
+
 export const UploadCreateInputSchema: z.ZodType<Prisma.UploadCreateInput> = z.strictObject({
   id: z.cuid().optional(),
   userId: z.string(),
@@ -960,6 +1084,7 @@ export const UploadCreateInputSchema: z.ZodType<Prisma.UploadCreateInput> = z.st
   competitors: z.lazy(() => CompetitorCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadUncheckedCreateInputSchema: z.ZodType<Prisma.UploadUncheckedCreateInput> = z.strictObject({
@@ -975,6 +1100,7 @@ export const UploadUncheckedCreateInputSchema: z.ZodType<Prisma.UploadUncheckedC
   competitors: z.lazy(() => CompetitorUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadUpdateInputSchema: z.ZodType<Prisma.UploadUpdateInput> = z.strictObject({
@@ -990,6 +1116,7 @@ export const UploadUpdateInputSchema: z.ZodType<Prisma.UploadUpdateInput> = z.st
   competitors: z.lazy(() => CompetitorUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const UploadUncheckedUpdateInputSchema: z.ZodType<Prisma.UploadUncheckedUpdateInput> = z.strictObject({
@@ -1005,6 +1132,7 @@ export const UploadUncheckedUpdateInputSchema: z.ZodType<Prisma.UploadUncheckedU
   competitors: z.lazy(() => CompetitorUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const UploadCreateManyInputSchema: z.ZodType<Prisma.UploadCreateManyInput> = z.strictObject({
@@ -1528,6 +1656,82 @@ export const ActionUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ActionUnchec
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
+export const LlmLogCreateInputSchema: z.ZodType<Prisma.LlmLogCreateInput> = z.strictObject({
+  id: z.cuid().optional(),
+  agentName: z.string(),
+  prompt: z.string(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]),
+  rawOutput: z.string(),
+  latencyMs: z.number().int(),
+  createdAt: z.coerce.date().optional(),
+  upload: z.lazy(() => UploadCreateNestedOneWithoutLlmLogsInputSchema),
+});
+
+export const LlmLogUncheckedCreateInputSchema: z.ZodType<Prisma.LlmLogUncheckedCreateInput> = z.strictObject({
+  id: z.cuid().optional(),
+  uploadId: z.string(),
+  agentName: z.string(),
+  prompt: z.string(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]),
+  rawOutput: z.string(),
+  latencyMs: z.number().int(),
+  createdAt: z.coerce.date().optional(),
+});
+
+export const LlmLogUpdateInputSchema: z.ZodType<Prisma.LlmLogUpdateInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  agentName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  prompt: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]).optional(),
+  rawOutput: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  latencyMs: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  upload: z.lazy(() => UploadUpdateOneRequiredWithoutLlmLogsNestedInputSchema).optional(),
+});
+
+export const LlmLogUncheckedUpdateInputSchema: z.ZodType<Prisma.LlmLogUncheckedUpdateInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  uploadId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  agentName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  prompt: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]).optional(),
+  rawOutput: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  latencyMs: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
+export const LlmLogCreateManyInputSchema: z.ZodType<Prisma.LlmLogCreateManyInput> = z.strictObject({
+  id: z.cuid().optional(),
+  uploadId: z.string(),
+  agentName: z.string(),
+  prompt: z.string(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]),
+  rawOutput: z.string(),
+  latencyMs: z.number().int(),
+  createdAt: z.coerce.date().optional(),
+});
+
+export const LlmLogUpdateManyMutationInputSchema: z.ZodType<Prisma.LlmLogUpdateManyMutationInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  agentName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  prompt: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]).optional(),
+  rawOutput: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  latencyMs: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
+export const LlmLogUncheckedUpdateManyInputSchema: z.ZodType<Prisma.LlmLogUncheckedUpdateManyInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  uploadId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  agentName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  prompt: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]).optional(),
+  rawOutput: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  latencyMs: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
 export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.strictObject({
   equals: z.string().optional(),
   in: z.string().array().optional(),
@@ -1621,6 +1825,12 @@ export const ActionListRelationFilterSchema: z.ZodType<Prisma.ActionListRelation
   none: z.lazy(() => ActionWhereInputSchema).optional(),
 });
 
+export const LlmLogListRelationFilterSchema: z.ZodType<Prisma.LlmLogListRelationFilter> = z.strictObject({
+  every: z.lazy(() => LlmLogWhereInputSchema).optional(),
+  some: z.lazy(() => LlmLogWhereInputSchema).optional(),
+  none: z.lazy(() => LlmLogWhereInputSchema).optional(),
+});
+
 export const SortOrderInputSchema: z.ZodType<Prisma.SortOrderInput> = z.strictObject({
   sort: z.lazy(() => SortOrderSchema),
   nulls: z.lazy(() => NullsOrderSchema).optional(),
@@ -1643,6 +1853,10 @@ export const TechnicalIssueOrderByRelationAggregateInputSchema: z.ZodType<Prisma
 });
 
 export const ActionOrderByRelationAggregateInputSchema: z.ZodType<Prisma.ActionOrderByRelationAggregateInput> = z.strictObject({
+  _count: z.lazy(() => SortOrderSchema).optional(),
+});
+
+export const LlmLogOrderByRelationAggregateInputSchema: z.ZodType<Prisma.LlmLogOrderByRelationAggregateInput> = z.strictObject({
   _count: z.lazy(() => SortOrderSchema).optional(),
 });
 
@@ -2130,6 +2344,45 @@ export const JsonWithAggregatesFilterSchema: z.ZodType<Prisma.JsonWithAggregates
   _max: z.lazy(() => NestedJsonFilterSchema).optional(),
 });
 
+export const LlmLogCountOrderByAggregateInputSchema: z.ZodType<Prisma.LlmLogCountOrderByAggregateInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  uploadId: z.lazy(() => SortOrderSchema).optional(),
+  agentName: z.lazy(() => SortOrderSchema).optional(),
+  prompt: z.lazy(() => SortOrderSchema).optional(),
+  contextPayload: z.lazy(() => SortOrderSchema).optional(),
+  rawOutput: z.lazy(() => SortOrderSchema).optional(),
+  latencyMs: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+});
+
+export const LlmLogAvgOrderByAggregateInputSchema: z.ZodType<Prisma.LlmLogAvgOrderByAggregateInput> = z.strictObject({
+  latencyMs: z.lazy(() => SortOrderSchema).optional(),
+});
+
+export const LlmLogMaxOrderByAggregateInputSchema: z.ZodType<Prisma.LlmLogMaxOrderByAggregateInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  uploadId: z.lazy(() => SortOrderSchema).optional(),
+  agentName: z.lazy(() => SortOrderSchema).optional(),
+  prompt: z.lazy(() => SortOrderSchema).optional(),
+  rawOutput: z.lazy(() => SortOrderSchema).optional(),
+  latencyMs: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+});
+
+export const LlmLogMinOrderByAggregateInputSchema: z.ZodType<Prisma.LlmLogMinOrderByAggregateInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  uploadId: z.lazy(() => SortOrderSchema).optional(),
+  agentName: z.lazy(() => SortOrderSchema).optional(),
+  prompt: z.lazy(() => SortOrderSchema).optional(),
+  rawOutput: z.lazy(() => SortOrderSchema).optional(),
+  latencyMs: z.lazy(() => SortOrderSchema).optional(),
+  createdAt: z.lazy(() => SortOrderSchema).optional(),
+});
+
+export const LlmLogSumOrderByAggregateInputSchema: z.ZodType<Prisma.LlmLogSumOrderByAggregateInput> = z.strictObject({
+  latencyMs: z.lazy(() => SortOrderSchema).optional(),
+});
+
 export const PageCreateNestedManyWithoutUploadInputSchema: z.ZodType<Prisma.PageCreateNestedManyWithoutUploadInput> = z.strictObject({
   create: z.union([ z.lazy(() => PageCreateWithoutUploadInputSchema), z.lazy(() => PageCreateWithoutUploadInputSchema).array(), z.lazy(() => PageUncheckedCreateWithoutUploadInputSchema), z.lazy(() => PageUncheckedCreateWithoutUploadInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => PageCreateOrConnectWithoutUploadInputSchema), z.lazy(() => PageCreateOrConnectWithoutUploadInputSchema).array() ]).optional(),
@@ -2165,6 +2418,13 @@ export const ActionCreateNestedManyWithoutUploadInputSchema: z.ZodType<Prisma.Ac
   connect: z.union([ z.lazy(() => ActionWhereUniqueInputSchema), z.lazy(() => ActionWhereUniqueInputSchema).array() ]).optional(),
 });
 
+export const LlmLogCreateNestedManyWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogCreateNestedManyWithoutUploadInput> = z.strictObject({
+  create: z.union([ z.lazy(() => LlmLogCreateWithoutUploadInputSchema), z.lazy(() => LlmLogCreateWithoutUploadInputSchema).array(), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => LlmLogCreateOrConnectWithoutUploadInputSchema), z.lazy(() => LlmLogCreateOrConnectWithoutUploadInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => LlmLogCreateManyUploadInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+});
+
 export const PageUncheckedCreateNestedManyWithoutUploadInputSchema: z.ZodType<Prisma.PageUncheckedCreateNestedManyWithoutUploadInput> = z.strictObject({
   create: z.union([ z.lazy(() => PageCreateWithoutUploadInputSchema), z.lazy(() => PageCreateWithoutUploadInputSchema).array(), z.lazy(() => PageUncheckedCreateWithoutUploadInputSchema), z.lazy(() => PageUncheckedCreateWithoutUploadInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => PageCreateOrConnectWithoutUploadInputSchema), z.lazy(() => PageCreateOrConnectWithoutUploadInputSchema).array() ]).optional(),
@@ -2198,6 +2458,13 @@ export const ActionUncheckedCreateNestedManyWithoutUploadInputSchema: z.ZodType<
   connectOrCreate: z.union([ z.lazy(() => ActionCreateOrConnectWithoutUploadInputSchema), z.lazy(() => ActionCreateOrConnectWithoutUploadInputSchema).array() ]).optional(),
   createMany: z.lazy(() => ActionCreateManyUploadInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => ActionWhereUniqueInputSchema), z.lazy(() => ActionWhereUniqueInputSchema).array() ]).optional(),
+});
+
+export const LlmLogUncheckedCreateNestedManyWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogUncheckedCreateNestedManyWithoutUploadInput> = z.strictObject({
+  create: z.union([ z.lazy(() => LlmLogCreateWithoutUploadInputSchema), z.lazy(() => LlmLogCreateWithoutUploadInputSchema).array(), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => LlmLogCreateOrConnectWithoutUploadInputSchema), z.lazy(() => LlmLogCreateOrConnectWithoutUploadInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => LlmLogCreateManyUploadInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
 });
 
 export const StringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.StringFieldUpdateOperationsInput> = z.strictObject({
@@ -2294,6 +2561,20 @@ export const ActionUpdateManyWithoutUploadNestedInputSchema: z.ZodType<Prisma.Ac
   deleteMany: z.union([ z.lazy(() => ActionScalarWhereInputSchema), z.lazy(() => ActionScalarWhereInputSchema).array() ]).optional(),
 });
 
+export const LlmLogUpdateManyWithoutUploadNestedInputSchema: z.ZodType<Prisma.LlmLogUpdateManyWithoutUploadNestedInput> = z.strictObject({
+  create: z.union([ z.lazy(() => LlmLogCreateWithoutUploadInputSchema), z.lazy(() => LlmLogCreateWithoutUploadInputSchema).array(), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => LlmLogCreateOrConnectWithoutUploadInputSchema), z.lazy(() => LlmLogCreateOrConnectWithoutUploadInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => LlmLogUpsertWithWhereUniqueWithoutUploadInputSchema), z.lazy(() => LlmLogUpsertWithWhereUniqueWithoutUploadInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => LlmLogCreateManyUploadInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => LlmLogUpdateWithWhereUniqueWithoutUploadInputSchema), z.lazy(() => LlmLogUpdateWithWhereUniqueWithoutUploadInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => LlmLogUpdateManyWithWhereWithoutUploadInputSchema), z.lazy(() => LlmLogUpdateManyWithWhereWithoutUploadInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => LlmLogScalarWhereInputSchema), z.lazy(() => LlmLogScalarWhereInputSchema).array() ]).optional(),
+});
+
 export const PageUncheckedUpdateManyWithoutUploadNestedInputSchema: z.ZodType<Prisma.PageUncheckedUpdateManyWithoutUploadNestedInput> = z.strictObject({
   create: z.union([ z.lazy(() => PageCreateWithoutUploadInputSchema), z.lazy(() => PageCreateWithoutUploadInputSchema).array(), z.lazy(() => PageUncheckedCreateWithoutUploadInputSchema), z.lazy(() => PageUncheckedCreateWithoutUploadInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => PageCreateOrConnectWithoutUploadInputSchema), z.lazy(() => PageCreateOrConnectWithoutUploadInputSchema).array() ]).optional(),
@@ -2362,6 +2643,20 @@ export const ActionUncheckedUpdateManyWithoutUploadNestedInputSchema: z.ZodType<
   update: z.union([ z.lazy(() => ActionUpdateWithWhereUniqueWithoutUploadInputSchema), z.lazy(() => ActionUpdateWithWhereUniqueWithoutUploadInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => ActionUpdateManyWithWhereWithoutUploadInputSchema), z.lazy(() => ActionUpdateManyWithWhereWithoutUploadInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => ActionScalarWhereInputSchema), z.lazy(() => ActionScalarWhereInputSchema).array() ]).optional(),
+});
+
+export const LlmLogUncheckedUpdateManyWithoutUploadNestedInputSchema: z.ZodType<Prisma.LlmLogUncheckedUpdateManyWithoutUploadNestedInput> = z.strictObject({
+  create: z.union([ z.lazy(() => LlmLogCreateWithoutUploadInputSchema), z.lazy(() => LlmLogCreateWithoutUploadInputSchema).array(), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => LlmLogCreateOrConnectWithoutUploadInputSchema), z.lazy(() => LlmLogCreateOrConnectWithoutUploadInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => LlmLogUpsertWithWhereUniqueWithoutUploadInputSchema), z.lazy(() => LlmLogUpsertWithWhereUniqueWithoutUploadInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => LlmLogCreateManyUploadInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => LlmLogWhereUniqueInputSchema), z.lazy(() => LlmLogWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => LlmLogUpdateWithWhereUniqueWithoutUploadInputSchema), z.lazy(() => LlmLogUpdateWithWhereUniqueWithoutUploadInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => LlmLogUpdateManyWithWhereWithoutUploadInputSchema), z.lazy(() => LlmLogUpdateManyWithWhereWithoutUploadInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => LlmLogScalarWhereInputSchema), z.lazy(() => LlmLogScalarWhereInputSchema).array() ]).optional(),
 });
 
 export const UploadCreateNestedOneWithoutPagesInputSchema: z.ZodType<Prisma.UploadCreateNestedOneWithoutPagesInput> = z.strictObject({
@@ -2580,6 +2875,20 @@ export const UploadUpdateOneRequiredWithoutActionsNestedInputSchema: z.ZodType<P
   upsert: z.lazy(() => UploadUpsertWithoutActionsInputSchema).optional(),
   connect: z.lazy(() => UploadWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => UploadUpdateToOneWithWhereWithoutActionsInputSchema), z.lazy(() => UploadUpdateWithoutActionsInputSchema), z.lazy(() => UploadUncheckedUpdateWithoutActionsInputSchema) ]).optional(),
+});
+
+export const UploadCreateNestedOneWithoutLlmLogsInputSchema: z.ZodType<Prisma.UploadCreateNestedOneWithoutLlmLogsInput> = z.strictObject({
+  create: z.union([ z.lazy(() => UploadCreateWithoutLlmLogsInputSchema), z.lazy(() => UploadUncheckedCreateWithoutLlmLogsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UploadCreateOrConnectWithoutLlmLogsInputSchema).optional(),
+  connect: z.lazy(() => UploadWhereUniqueInputSchema).optional(),
+});
+
+export const UploadUpdateOneRequiredWithoutLlmLogsNestedInputSchema: z.ZodType<Prisma.UploadUpdateOneRequiredWithoutLlmLogsNestedInput> = z.strictObject({
+  create: z.union([ z.lazy(() => UploadCreateWithoutLlmLogsInputSchema), z.lazy(() => UploadUncheckedCreateWithoutLlmLogsInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => UploadCreateOrConnectWithoutLlmLogsInputSchema).optional(),
+  upsert: z.lazy(() => UploadUpsertWithoutLlmLogsInputSchema).optional(),
+  connect: z.lazy(() => UploadWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => UploadUpdateToOneWithWhereWithoutLlmLogsInputSchema), z.lazy(() => UploadUpdateWithoutLlmLogsInputSchema), z.lazy(() => UploadUncheckedUpdateWithoutLlmLogsInputSchema) ]).optional(),
 });
 
 export const NestedStringFilterSchema: z.ZodType<Prisma.NestedStringFilter> = z.strictObject({
@@ -2987,6 +3296,36 @@ export const ActionCreateManyUploadInputEnvelopeSchema: z.ZodType<Prisma.ActionC
   skipDuplicates: z.boolean().optional(),
 });
 
+export const LlmLogCreateWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogCreateWithoutUploadInput> = z.strictObject({
+  id: z.cuid().optional(),
+  agentName: z.string(),
+  prompt: z.string(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]),
+  rawOutput: z.string(),
+  latencyMs: z.number().int(),
+  createdAt: z.coerce.date().optional(),
+});
+
+export const LlmLogUncheckedCreateWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogUncheckedCreateWithoutUploadInput> = z.strictObject({
+  id: z.cuid().optional(),
+  agentName: z.string(),
+  prompt: z.string(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]),
+  rawOutput: z.string(),
+  latencyMs: z.number().int(),
+  createdAt: z.coerce.date().optional(),
+});
+
+export const LlmLogCreateOrConnectWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogCreateOrConnectWithoutUploadInput> = z.strictObject({
+  where: z.lazy(() => LlmLogWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => LlmLogCreateWithoutUploadInputSchema), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema) ]),
+});
+
+export const LlmLogCreateManyUploadInputEnvelopeSchema: z.ZodType<Prisma.LlmLogCreateManyUploadInputEnvelope> = z.strictObject({
+  data: z.union([ z.lazy(() => LlmLogCreateManyUploadInputSchema), z.lazy(() => LlmLogCreateManyUploadInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional(),
+});
+
 export const PageUpsertWithWhereUniqueWithoutUploadInputSchema: z.ZodType<Prisma.PageUpsertWithWhereUniqueWithoutUploadInput> = z.strictObject({
   where: z.lazy(() => PageWhereUniqueInputSchema),
   update: z.union([ z.lazy(() => PageUpdateWithoutUploadInputSchema), z.lazy(() => PageUncheckedUpdateWithoutUploadInputSchema) ]),
@@ -3152,6 +3491,36 @@ export const ActionScalarWhereInputSchema: z.ZodType<Prisma.ActionScalarWhereInp
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
 });
 
+export const LlmLogUpsertWithWhereUniqueWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogUpsertWithWhereUniqueWithoutUploadInput> = z.strictObject({
+  where: z.lazy(() => LlmLogWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => LlmLogUpdateWithoutUploadInputSchema), z.lazy(() => LlmLogUncheckedUpdateWithoutUploadInputSchema) ]),
+  create: z.union([ z.lazy(() => LlmLogCreateWithoutUploadInputSchema), z.lazy(() => LlmLogUncheckedCreateWithoutUploadInputSchema) ]),
+});
+
+export const LlmLogUpdateWithWhereUniqueWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogUpdateWithWhereUniqueWithoutUploadInput> = z.strictObject({
+  where: z.lazy(() => LlmLogWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => LlmLogUpdateWithoutUploadInputSchema), z.lazy(() => LlmLogUncheckedUpdateWithoutUploadInputSchema) ]),
+});
+
+export const LlmLogUpdateManyWithWhereWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogUpdateManyWithWhereWithoutUploadInput> = z.strictObject({
+  where: z.lazy(() => LlmLogScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => LlmLogUpdateManyMutationInputSchema), z.lazy(() => LlmLogUncheckedUpdateManyWithoutUploadInputSchema) ]),
+});
+
+export const LlmLogScalarWhereInputSchema: z.ZodType<Prisma.LlmLogScalarWhereInput> = z.strictObject({
+  AND: z.union([ z.lazy(() => LlmLogScalarWhereInputSchema), z.lazy(() => LlmLogScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => LlmLogScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => LlmLogScalarWhereInputSchema), z.lazy(() => LlmLogScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  uploadId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  agentName: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  prompt: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  contextPayload: z.lazy(() => JsonFilterSchema).optional(),
+  rawOutput: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  latencyMs: z.union([ z.lazy(() => IntFilterSchema), z.number() ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
+});
+
 export const UploadCreateWithoutPagesInputSchema: z.ZodType<Prisma.UploadCreateWithoutPagesInput> = z.strictObject({
   id: z.cuid().optional(),
   userId: z.string(),
@@ -3164,6 +3533,7 @@ export const UploadCreateWithoutPagesInputSchema: z.ZodType<Prisma.UploadCreateW
   competitors: z.lazy(() => CompetitorCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadUncheckedCreateWithoutPagesInputSchema: z.ZodType<Prisma.UploadUncheckedCreateWithoutPagesInput> = z.strictObject({
@@ -3178,6 +3548,7 @@ export const UploadUncheckedCreateWithoutPagesInputSchema: z.ZodType<Prisma.Uplo
   competitors: z.lazy(() => CompetitorUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadCreateOrConnectWithoutPagesInputSchema: z.ZodType<Prisma.UploadCreateOrConnectWithoutPagesInput> = z.strictObject({
@@ -3268,6 +3639,7 @@ export const UploadUpdateWithoutPagesInputSchema: z.ZodType<Prisma.UploadUpdateW
   competitors: z.lazy(() => CompetitorUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const UploadUncheckedUpdateWithoutPagesInputSchema: z.ZodType<Prisma.UploadUncheckedUpdateWithoutPagesInput> = z.strictObject({
@@ -3282,6 +3654,7 @@ export const UploadUncheckedUpdateWithoutPagesInputSchema: z.ZodType<Prisma.Uplo
   competitors: z.lazy(() => CompetitorUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const TechnicalIssueUpsertWithWhereUniqueWithoutPageInputSchema: z.ZodType<Prisma.TechnicalIssueUpsertWithWhereUniqueWithoutPageInput> = z.strictObject({
@@ -3328,6 +3701,7 @@ export const UploadCreateWithoutKeywordsInputSchema: z.ZodType<Prisma.UploadCrea
   competitors: z.lazy(() => CompetitorCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadUncheckedCreateWithoutKeywordsInputSchema: z.ZodType<Prisma.UploadUncheckedCreateWithoutKeywordsInput> = z.strictObject({
@@ -3342,6 +3716,7 @@ export const UploadUncheckedCreateWithoutKeywordsInputSchema: z.ZodType<Prisma.U
   competitors: z.lazy(() => CompetitorUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadCreateOrConnectWithoutKeywordsInputSchema: z.ZodType<Prisma.UploadCreateOrConnectWithoutKeywordsInput> = z.strictObject({
@@ -3421,6 +3796,7 @@ export const UploadUpdateWithoutKeywordsInputSchema: z.ZodType<Prisma.UploadUpda
   competitors: z.lazy(() => CompetitorUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const UploadUncheckedUpdateWithoutKeywordsInputSchema: z.ZodType<Prisma.UploadUncheckedUpdateWithoutKeywordsInput> = z.strictObject({
@@ -3435,6 +3811,7 @@ export const UploadUncheckedUpdateWithoutKeywordsInputSchema: z.ZodType<Prisma.U
   competitors: z.lazy(() => CompetitorUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const PageUpsertWithoutKeywordsInputSchema: z.ZodType<Prisma.PageUpsertWithoutKeywordsInput> = z.strictObject({
@@ -3504,6 +3881,7 @@ export const UploadCreateWithoutCompetitorsInputSchema: z.ZodType<Prisma.UploadC
   keywords: z.lazy(() => KeywordCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadUncheckedCreateWithoutCompetitorsInputSchema: z.ZodType<Prisma.UploadUncheckedCreateWithoutCompetitorsInput> = z.strictObject({
@@ -3518,6 +3896,7 @@ export const UploadUncheckedCreateWithoutCompetitorsInputSchema: z.ZodType<Prism
   keywords: z.lazy(() => KeywordUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadCreateOrConnectWithoutCompetitorsInputSchema: z.ZodType<Prisma.UploadCreateOrConnectWithoutCompetitorsInput> = z.strictObject({
@@ -3548,6 +3927,7 @@ export const UploadUpdateWithoutCompetitorsInputSchema: z.ZodType<Prisma.UploadU
   keywords: z.lazy(() => KeywordUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const UploadUncheckedUpdateWithoutCompetitorsInputSchema: z.ZodType<Prisma.UploadUncheckedUpdateWithoutCompetitorsInput> = z.strictObject({
@@ -3562,6 +3942,7 @@ export const UploadUncheckedUpdateWithoutCompetitorsInputSchema: z.ZodType<Prism
   keywords: z.lazy(() => KeywordUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const UploadCreateWithoutTechnicalIssuesInputSchema: z.ZodType<Prisma.UploadCreateWithoutTechnicalIssuesInput> = z.strictObject({
@@ -3576,6 +3957,7 @@ export const UploadCreateWithoutTechnicalIssuesInputSchema: z.ZodType<Prisma.Upl
   keywords: z.lazy(() => KeywordCreateNestedManyWithoutUploadInputSchema).optional(),
   competitors: z.lazy(() => CompetitorCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadUncheckedCreateWithoutTechnicalIssuesInputSchema: z.ZodType<Prisma.UploadUncheckedCreateWithoutTechnicalIssuesInput> = z.strictObject({
@@ -3590,6 +3972,7 @@ export const UploadUncheckedCreateWithoutTechnicalIssuesInputSchema: z.ZodType<P
   keywords: z.lazy(() => KeywordUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   competitors: z.lazy(() => CompetitorUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadCreateOrConnectWithoutTechnicalIssuesInputSchema: z.ZodType<Prisma.UploadCreateOrConnectWithoutTechnicalIssuesInput> = z.strictObject({
@@ -3669,6 +4052,7 @@ export const UploadUpdateWithoutTechnicalIssuesInputSchema: z.ZodType<Prisma.Upl
   keywords: z.lazy(() => KeywordUpdateManyWithoutUploadNestedInputSchema).optional(),
   competitors: z.lazy(() => CompetitorUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const UploadUncheckedUpdateWithoutTechnicalIssuesInputSchema: z.ZodType<Prisma.UploadUncheckedUpdateWithoutTechnicalIssuesInput> = z.strictObject({
@@ -3683,6 +4067,7 @@ export const UploadUncheckedUpdateWithoutTechnicalIssuesInputSchema: z.ZodType<P
   keywords: z.lazy(() => KeywordUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   competitors: z.lazy(() => CompetitorUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   actions: z.lazy(() => ActionUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const PageUpsertWithoutTechnicalIssuesInputSchema: z.ZodType<Prisma.PageUpsertWithoutTechnicalIssuesInput> = z.strictObject({
@@ -3752,6 +4137,7 @@ export const UploadCreateWithoutActionsInputSchema: z.ZodType<Prisma.UploadCreat
   keywords: z.lazy(() => KeywordCreateNestedManyWithoutUploadInputSchema).optional(),
   competitors: z.lazy(() => CompetitorCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadUncheckedCreateWithoutActionsInputSchema: z.ZodType<Prisma.UploadUncheckedCreateWithoutActionsInput> = z.strictObject({
@@ -3766,6 +4152,7 @@ export const UploadUncheckedCreateWithoutActionsInputSchema: z.ZodType<Prisma.Up
   keywords: z.lazy(() => KeywordUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   competitors: z.lazy(() => CompetitorUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
 });
 
 export const UploadCreateOrConnectWithoutActionsInputSchema: z.ZodType<Prisma.UploadCreateOrConnectWithoutActionsInput> = z.strictObject({
@@ -3796,6 +4183,7 @@ export const UploadUpdateWithoutActionsInputSchema: z.ZodType<Prisma.UploadUpdat
   keywords: z.lazy(() => KeywordUpdateManyWithoutUploadNestedInputSchema).optional(),
   competitors: z.lazy(() => CompetitorUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const UploadUncheckedUpdateWithoutActionsInputSchema: z.ZodType<Prisma.UploadUncheckedUpdateWithoutActionsInput> = z.strictObject({
@@ -3810,6 +4198,83 @@ export const UploadUncheckedUpdateWithoutActionsInputSchema: z.ZodType<Prisma.Up
   keywords: z.lazy(() => KeywordUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   competitors: z.lazy(() => CompetitorUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
   technicalIssues: z.lazy(() => TechnicalIssueUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  llmLogs: z.lazy(() => LlmLogUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+});
+
+export const UploadCreateWithoutLlmLogsInputSchema: z.ZodType<Prisma.UploadCreateWithoutLlmLogsInput> = z.strictObject({
+  id: z.cuid().optional(),
+  userId: z.string(),
+  description: z.string().optional().nullable(),
+  currency: z.string().optional().nullable(),
+  generatedAt: z.coerce.date().optional().nullable(),
+  windowDays: z.number().int().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  pages: z.lazy(() => PageCreateNestedManyWithoutUploadInputSchema).optional(),
+  keywords: z.lazy(() => KeywordCreateNestedManyWithoutUploadInputSchema).optional(),
+  competitors: z.lazy(() => CompetitorCreateNestedManyWithoutUploadInputSchema).optional(),
+  technicalIssues: z.lazy(() => TechnicalIssueCreateNestedManyWithoutUploadInputSchema).optional(),
+  actions: z.lazy(() => ActionCreateNestedManyWithoutUploadInputSchema).optional(),
+});
+
+export const UploadUncheckedCreateWithoutLlmLogsInputSchema: z.ZodType<Prisma.UploadUncheckedCreateWithoutLlmLogsInput> = z.strictObject({
+  id: z.cuid().optional(),
+  userId: z.string(),
+  description: z.string().optional().nullable(),
+  currency: z.string().optional().nullable(),
+  generatedAt: z.coerce.date().optional().nullable(),
+  windowDays: z.number().int().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  pages: z.lazy(() => PageUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  keywords: z.lazy(() => KeywordUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  competitors: z.lazy(() => CompetitorUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  technicalIssues: z.lazy(() => TechnicalIssueUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+  actions: z.lazy(() => ActionUncheckedCreateNestedManyWithoutUploadInputSchema).optional(),
+});
+
+export const UploadCreateOrConnectWithoutLlmLogsInputSchema: z.ZodType<Prisma.UploadCreateOrConnectWithoutLlmLogsInput> = z.strictObject({
+  where: z.lazy(() => UploadWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => UploadCreateWithoutLlmLogsInputSchema), z.lazy(() => UploadUncheckedCreateWithoutLlmLogsInputSchema) ]),
+});
+
+export const UploadUpsertWithoutLlmLogsInputSchema: z.ZodType<Prisma.UploadUpsertWithoutLlmLogsInput> = z.strictObject({
+  update: z.union([ z.lazy(() => UploadUpdateWithoutLlmLogsInputSchema), z.lazy(() => UploadUncheckedUpdateWithoutLlmLogsInputSchema) ]),
+  create: z.union([ z.lazy(() => UploadCreateWithoutLlmLogsInputSchema), z.lazy(() => UploadUncheckedCreateWithoutLlmLogsInputSchema) ]),
+  where: z.lazy(() => UploadWhereInputSchema).optional(),
+});
+
+export const UploadUpdateToOneWithWhereWithoutLlmLogsInputSchema: z.ZodType<Prisma.UploadUpdateToOneWithWhereWithoutLlmLogsInput> = z.strictObject({
+  where: z.lazy(() => UploadWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => UploadUpdateWithoutLlmLogsInputSchema), z.lazy(() => UploadUncheckedUpdateWithoutLlmLogsInputSchema) ]),
+});
+
+export const UploadUpdateWithoutLlmLogsInputSchema: z.ZodType<Prisma.UploadUpdateWithoutLlmLogsInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  currency: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  generatedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  windowDays: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  pages: z.lazy(() => PageUpdateManyWithoutUploadNestedInputSchema).optional(),
+  keywords: z.lazy(() => KeywordUpdateManyWithoutUploadNestedInputSchema).optional(),
+  competitors: z.lazy(() => CompetitorUpdateManyWithoutUploadNestedInputSchema).optional(),
+  technicalIssues: z.lazy(() => TechnicalIssueUpdateManyWithoutUploadNestedInputSchema).optional(),
+  actions: z.lazy(() => ActionUpdateManyWithoutUploadNestedInputSchema).optional(),
+});
+
+export const UploadUncheckedUpdateWithoutLlmLogsInputSchema: z.ZodType<Prisma.UploadUncheckedUpdateWithoutLlmLogsInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  description: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  currency: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  generatedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  windowDays: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  pages: z.lazy(() => PageUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  keywords: z.lazy(() => KeywordUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  competitors: z.lazy(() => CompetitorUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  technicalIssues: z.lazy(() => TechnicalIssueUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
+  actions: z.lazy(() => ActionUncheckedUpdateManyWithoutUploadNestedInputSchema).optional(),
 });
 
 export const PageCreateManyUploadInputSchema: z.ZodType<Prisma.PageCreateManyUploadInput> = z.strictObject({
@@ -3874,6 +4339,16 @@ export const ActionCreateManyUploadInputSchema: z.ZodType<Prisma.ActionCreateMan
   status: z.string().optional(),
   rejectReason: z.string().optional().nullable(),
   payload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]),
+  createdAt: z.coerce.date().optional(),
+});
+
+export const LlmLogCreateManyUploadInputSchema: z.ZodType<Prisma.LlmLogCreateManyUploadInput> = z.strictObject({
+  id: z.cuid().optional(),
+  agentName: z.string(),
+  prompt: z.string(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]),
+  rawOutput: z.string(),
+  latencyMs: z.number().int(),
   createdAt: z.coerce.date().optional(),
 });
 
@@ -4073,6 +4548,36 @@ export const ActionUncheckedUpdateManyWithoutUploadInputSchema: z.ZodType<Prisma
   status: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   rejectReason: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   payload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
+export const LlmLogUpdateWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogUpdateWithoutUploadInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  agentName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  prompt: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]).optional(),
+  rawOutput: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  latencyMs: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
+export const LlmLogUncheckedUpdateWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogUncheckedUpdateWithoutUploadInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  agentName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  prompt: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]).optional(),
+  rawOutput: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  latencyMs: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
+export const LlmLogUncheckedUpdateManyWithoutUploadInputSchema: z.ZodType<Prisma.LlmLogUncheckedUpdateManyWithoutUploadInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  agentName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  prompt: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  contextPayload: z.union([ z.lazy(() => JsonNullValueInputSchema), InputJsonValueSchema ]).optional(),
+  rawOutput: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  latencyMs: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
@@ -4532,6 +5037,68 @@ export const ActionFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.ActionFindUniqu
   where: ActionWhereUniqueInputSchema, 
 }).strict();
 
+export const LlmLogFindFirstArgsSchema: z.ZodType<Prisma.LlmLogFindFirstArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  where: LlmLogWhereInputSchema.optional(), 
+  orderBy: z.union([ LlmLogOrderByWithRelationInputSchema.array(), LlmLogOrderByWithRelationInputSchema ]).optional(),
+  cursor: LlmLogWhereUniqueInputSchema.optional(), 
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ LlmLogScalarFieldEnumSchema, LlmLogScalarFieldEnumSchema.array() ]).optional(),
+}).strict();
+
+export const LlmLogFindFirstOrThrowArgsSchema: z.ZodType<Prisma.LlmLogFindFirstOrThrowArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  where: LlmLogWhereInputSchema.optional(), 
+  orderBy: z.union([ LlmLogOrderByWithRelationInputSchema.array(), LlmLogOrderByWithRelationInputSchema ]).optional(),
+  cursor: LlmLogWhereUniqueInputSchema.optional(), 
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ LlmLogScalarFieldEnumSchema, LlmLogScalarFieldEnumSchema.array() ]).optional(),
+}).strict();
+
+export const LlmLogFindManyArgsSchema: z.ZodType<Prisma.LlmLogFindManyArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  where: LlmLogWhereInputSchema.optional(), 
+  orderBy: z.union([ LlmLogOrderByWithRelationInputSchema.array(), LlmLogOrderByWithRelationInputSchema ]).optional(),
+  cursor: LlmLogWhereUniqueInputSchema.optional(), 
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ LlmLogScalarFieldEnumSchema, LlmLogScalarFieldEnumSchema.array() ]).optional(),
+}).strict();
+
+export const LlmLogAggregateArgsSchema: z.ZodType<Prisma.LlmLogAggregateArgs> = z.object({
+  where: LlmLogWhereInputSchema.optional(), 
+  orderBy: z.union([ LlmLogOrderByWithRelationInputSchema.array(), LlmLogOrderByWithRelationInputSchema ]).optional(),
+  cursor: LlmLogWhereUniqueInputSchema.optional(), 
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict();
+
+export const LlmLogGroupByArgsSchema: z.ZodType<Prisma.LlmLogGroupByArgs> = z.object({
+  where: LlmLogWhereInputSchema.optional(), 
+  orderBy: z.union([ LlmLogOrderByWithAggregationInputSchema.array(), LlmLogOrderByWithAggregationInputSchema ]).optional(),
+  by: LlmLogScalarFieldEnumSchema.array(), 
+  having: LlmLogScalarWhereWithAggregatesInputSchema.optional(), 
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict();
+
+export const LlmLogFindUniqueArgsSchema: z.ZodType<Prisma.LlmLogFindUniqueArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  where: LlmLogWhereUniqueInputSchema, 
+}).strict();
+
+export const LlmLogFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.LlmLogFindUniqueOrThrowArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  where: LlmLogWhereUniqueInputSchema, 
+}).strict();
+
 export const UploadCreateArgsSchema: z.ZodType<Prisma.UploadCreateArgs> = z.object({
   select: UploadSelectSchema.optional(),
   include: UploadIncludeSchema.optional(),
@@ -4853,5 +5420,59 @@ export const ActionUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.ActionUpdateM
 
 export const ActionDeleteManyArgsSchema: z.ZodType<Prisma.ActionDeleteManyArgs> = z.object({
   where: ActionWhereInputSchema.optional(), 
+  limit: z.number().optional(),
+}).strict();
+
+export const LlmLogCreateArgsSchema: z.ZodType<Prisma.LlmLogCreateArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  data: z.union([ LlmLogCreateInputSchema, LlmLogUncheckedCreateInputSchema ]),
+}).strict();
+
+export const LlmLogUpsertArgsSchema: z.ZodType<Prisma.LlmLogUpsertArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  where: LlmLogWhereUniqueInputSchema, 
+  create: z.union([ LlmLogCreateInputSchema, LlmLogUncheckedCreateInputSchema ]),
+  update: z.union([ LlmLogUpdateInputSchema, LlmLogUncheckedUpdateInputSchema ]),
+}).strict();
+
+export const LlmLogCreateManyArgsSchema: z.ZodType<Prisma.LlmLogCreateManyArgs> = z.object({
+  data: z.union([ LlmLogCreateManyInputSchema, LlmLogCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict();
+
+export const LlmLogCreateManyAndReturnArgsSchema: z.ZodType<Prisma.LlmLogCreateManyAndReturnArgs> = z.object({
+  data: z.union([ LlmLogCreateManyInputSchema, LlmLogCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict();
+
+export const LlmLogDeleteArgsSchema: z.ZodType<Prisma.LlmLogDeleteArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  where: LlmLogWhereUniqueInputSchema, 
+}).strict();
+
+export const LlmLogUpdateArgsSchema: z.ZodType<Prisma.LlmLogUpdateArgs> = z.object({
+  select: LlmLogSelectSchema.optional(),
+  include: LlmLogIncludeSchema.optional(),
+  data: z.union([ LlmLogUpdateInputSchema, LlmLogUncheckedUpdateInputSchema ]),
+  where: LlmLogWhereUniqueInputSchema, 
+}).strict();
+
+export const LlmLogUpdateManyArgsSchema: z.ZodType<Prisma.LlmLogUpdateManyArgs> = z.object({
+  data: z.union([ LlmLogUpdateManyMutationInputSchema, LlmLogUncheckedUpdateManyInputSchema ]),
+  where: LlmLogWhereInputSchema.optional(), 
+  limit: z.number().optional(),
+}).strict();
+
+export const LlmLogUpdateManyAndReturnArgsSchema: z.ZodType<Prisma.LlmLogUpdateManyAndReturnArgs> = z.object({
+  data: z.union([ LlmLogUpdateManyMutationInputSchema, LlmLogUncheckedUpdateManyInputSchema ]),
+  where: LlmLogWhereInputSchema.optional(), 
+  limit: z.number().optional(),
+}).strict();
+
+export const LlmLogDeleteManyArgsSchema: z.ZodType<Prisma.LlmLogDeleteManyArgs> = z.object({
+  where: LlmLogWhereInputSchema.optional(), 
   limit: z.number().optional(),
 }).strict();

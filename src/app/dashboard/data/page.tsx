@@ -28,6 +28,7 @@ export default async function DataPage() {
   const competitors = await prisma.competitor.findMany({ where: { upload: { userId } } });
   const technicalIssues = await prisma.technicalIssue.findMany({ where: { upload: { userId } } });
   const actions = await prisma.action.findMany({ where: { upload: { userId } } });
+  const llmLogs = await prisma.llmLog.findMany({ where: { upload: { userId } }, orderBy: { createdAt: 'desc' } });
 
   const recentUpload = uploads[0];
 
@@ -40,9 +41,9 @@ export default async function DataPage() {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-3">
               <Database className="h-8 w-8 text-primary" />
-              <h1 className="text-4xl font-extrabold tracking-tight">Database Overview</h1>
+              <h1 className="text-4xl font-extrabold tracking-tight">Debug Panel</h1>
             </div>
-            <p className="text-lg text-muted-foreground">View all synchronized entities stored via Prisma.</p>
+            <p className="text-lg text-muted-foreground">View all synchronized entities and LLM execution logs.</p>
           </div>
           <ClearDataButton />
         </div>
@@ -96,6 +97,7 @@ export default async function DataPage() {
           competitors={competitors}
           technicalIssues={technicalIssues}
           actions={actions}
+          llmLogs={llmLogs}
         />
 
       </div>

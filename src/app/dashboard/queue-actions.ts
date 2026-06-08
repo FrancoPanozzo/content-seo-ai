@@ -44,7 +44,7 @@ export async function applyActionDryRun(actionId: string) {
         payload: {
           ...currentPayload,
           dryRunResult
-        }
+        } as any
       }
     });
 

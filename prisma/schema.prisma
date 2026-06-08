@@ -32,6 +32,7 @@ model Upload {
   competitors     Competitor[]
   technicalIssues TechnicalIssue[]
   actions         Action[]
+  llmLogs         LlmLog[]
 }
 
 model Page {
@@ -124,4 +125,18 @@ model Action {
   payload      Json     // Flexible JSON payload
   
   createdAt    DateTime @default(now())
+}
+
+model LlmLog {
+  id             String   @id @default(cuid())
+  uploadId       String
+  upload         Upload   @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  
+  agentName      String
+  prompt         String
+  contextPayload Json
+  rawOutput      String
+  latencyMs      Int
+  
+  createdAt      DateTime @default(now())
 }

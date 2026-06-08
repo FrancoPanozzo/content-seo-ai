@@ -41,7 +41,7 @@ export async function POST(req: Request) {
           payload: {
             ...currentPayload,
             dryRunResult
-          }
+          } as any
         }
       });
 

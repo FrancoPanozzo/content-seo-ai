@@ -78,7 +78,20 @@ REQUIREMENTS:
   });
   
   const endTime = Date.now();
-  console.log(`LLM call took ${(endTime - startTime) / 1000} seconds`);
+  const latencyMs = endTime - startTime;
+  console.log(`LLM call took ${latencyMs / 1000} seconds`);
+
+  // Log LLM interaction
+  await prisma.llmLog.create({
+    data: {
+      uploadId: upload.id,
+      agentName: 'Planner',
+      prompt: `You are an expert SEO Strategist... [Truncated for DB]`,
+      contextPayload: context as any,
+      rawOutput: JSON.stringify(output),
+      latencyMs: latencyMs
+    }
+  });
 
   console.log("LLM returned actions:", output.actions.length);
 

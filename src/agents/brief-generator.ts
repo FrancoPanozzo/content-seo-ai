@@ -52,6 +52,7 @@ export async function runBriefGeneratorAgent(actionId: string) {
 
   console.log(`Running Brief Generator for Action ${actionId} (Keyword: ${targetKeyword})`);
 
+  const startTime = Date.now();
   const { object } = await generateObject({
     model: openrouter('deepseek/deepseek-v4-flash'),
     schema: BriefSchema,
@@ -70,6 +71,20 @@ REQUIREMENTS:
 4. Include FAQs people actually ask about this.
 5. Provide a strong commercial angle.
 6. Suggest internal links to our existing pages listed in the context.`
+  });
+  
+  const latencyMs = Date.now() - startTime;
+
+  // Log LLM interaction
+  await prisma.llmLog.create({
+    data: {
+      uploadId: action.upload.id,
+      agentName: 'Brief Generator',
+      prompt: `You are an expert SEO Editor and Content Strategist... [Truncated for DB]`,
+      contextPayload: JSON.parse(contextStr),
+      rawOutput: JSON.stringify(object),
+      latencyMs: latencyMs
+    }
   });
 
   const guardedBrief = runBriefGuardrails(object as any, action.upload as any);

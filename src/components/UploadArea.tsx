@@ -12,6 +12,7 @@ export function UploadArea() {
   const router = useRouter();
   const [step, setStep] = useState<UploadStep>('idle');
   const [message, setMessage] = useState("");
+  const [errorDetails, setErrorDetails] = useState<{code: string, message: string} | null>(null);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -64,7 +65,12 @@ export function UploadArea() {
            router.refresh(); // Tells Next.js to re-fetch Server Components (like the DashboardPage)
         } else {
            setStep('error');
-           setMessage(`Planning Failed: ${planResult.error}`);
+           if (typeof planResult.error === 'object' && planResult.error !== null) {
+             setErrorDetails(planResult.error as any);
+             setMessage("Planning Failed.");
+           } else {
+             setMessage(`Planning Failed: ${planResult.error}`);
+           }
         }
       } else {
         setStep('error');
@@ -166,10 +172,20 @@ export function UploadArea() {
               />
             </label>
 
-            {message && step === 'error' && (
-              <div className="flex items-center gap-3 p-4 rounded-xl w-full text-sm font-medium border animate-in fade-in slide-in-from-bottom-4 bg-destructive/10 text-destructive border-destructive/20">
-                <AlertCircle className="h-5 w-5 shrink-0" />
-                <p className="break-words w-full">{message}</p>
+            {step === 'error' && (
+              <div className="flex flex-col gap-2 p-5 rounded-xl w-full border animate-in fade-in slide-in-from-bottom-4 bg-destructive/5 border-destructive/20 mt-6">
+                <div className="flex items-center gap-3 font-semibold text-destructive">
+                  <AlertCircle className="h-5 w-5 shrink-0" />
+                  <p>{message || "An error occurred"}</p>
+                </div>
+                {errorDetails && (
+                  <div className="mt-2 text-sm bg-background border border-border p-4 rounded-lg text-left">
+                    <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground mb-2">
+                      <span className="bg-destructive/10 text-destructive px-2 py-0.5 rounded font-bold">{errorDetails.code}</span>
+                    </div>
+                    <p className="text-foreground">{errorDetails.message}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>

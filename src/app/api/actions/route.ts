@@ -51,6 +51,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid type" }, { status: 400 });
   } catch (error: any) {
     console.error(error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    
+    let structuredError = "Unknown error occurred";
+    let code = "UNKNOWN_ERROR";
+
+    try {
+      const parsedError = JSON.parse(error.message);
+      if (parsedError.code) {
+        code = parsedError.code;
+        structuredError = parsedError.message;
+      }
+    } catch {
+      structuredError = error.message || structuredError;
+    }
+
+    return NextResponse.json({ success: false, error: { code, message: structuredError } }, { status: 500 });
   }
 }

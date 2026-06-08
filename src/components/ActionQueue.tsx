@@ -6,6 +6,7 @@ import { Check, X, Play, Loader2, AlertTriangle, Info, ChevronDown, ChevronUp } 
 export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
   const [localActions, setLocalActions] = useState(initialActions || []);
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const [errorStates, setErrorStates] = useState<Record<string, { code: string, message: string } | null>>({});
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [rejectPrompt, setRejectPrompt] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
@@ -19,6 +20,7 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
     if (!rejectReason.trim()) return;
     setExpandedId(null);
     setLoading(id, true);
+    setErrorStates(prev => ({ ...prev, [id]: null }));
     
     await fetch("/api/actions", {
       method: "POST",
@@ -36,22 +38,32 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
     if (e) e.stopPropagation();
     setExpandedId(null);
     setLoading(id, true);
+    setErrorStates(prev => ({ ...prev, [id]: null }));
     
-    const res = await fetch("/api/actions", {
+    try {
+      const res = await fetch("/api/actions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ actionId: id, type: "apply" })
     });
-    const data = await res.json();
-    
-    if (data.success && data.dryRunResult) {
-      setLocalActions(prev => prev.map((a: any) => a.id === id ? { 
-        ...a, 
-        status: "applied", 
-        payload: { ...(a.payload || {}), dryRunResult: data.dryRunResult } 
-      } : a));
+      const data = await res.json();
+      
+      if (data.success && data.dryRunResult) {
+        setLocalActions(prev => prev.map((a: any) => a.id === id ? { 
+          ...a, 
+          status: "applied", 
+          payload: { ...(a.payload || {}), dryRunResult: data.dryRunResult } 
+        } : a));
+      } else {
+        setErrorStates(prev => ({ ...prev, [id]: data.error || { code: "UNKNOWN", message: "An unexpected error occurred" } }));
+        setExpandedId(id); // Re-expand to show error
+      }
+    } catch (err: any) {
+      setErrorStates(prev => ({ ...prev, [id]: { code: "NETWORK_ERROR", message: err.message || "Network error" } }));
+      setExpandedId(id);
+    } finally {
+      setLoading(id, false);
     }
-    setLoading(id, false);
   };
 
   if (!localActions || localActions.length === 0) return null;
@@ -67,6 +79,7 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
           const isApplied = action.status === "applied";
           const isRejected = action.status.startsWith("rejected");
           const isLoading = !!loadingStates[action.id];
+          const actionError = errorStates[action.id];
           const isExpanded = expandedId === action.id;
 
           const typeColorMap: Record<string, string> = {
@@ -182,6 +195,20 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
                       </>
                     )}
                   </div>
+
+                  {actionError && (
+                    <div className="mt-4 flex flex-col gap-2 p-4 rounded-xl border bg-destructive/5 border-destructive/20 animate-in fade-in">
+                      <div className="flex items-center gap-2 font-semibold text-destructive text-sm">
+                        <AlertTriangle className="w-4 h-4" /> Action Failed
+                      </div>
+                      <div className="bg-background border border-border p-3 rounded-lg text-left text-sm">
+                        <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground mb-1">
+                          <span className="bg-destructive/10 text-destructive px-1.5 py-0.5 rounded font-bold">{actionError.code}</span>
+                        </div>
+                        <p className="text-foreground">{actionError.message}</p>
+                      </div>
+                    </div>
+                  )}
 
                   {rejectPrompt === action.id && (
                     <div className="mt-4 p-4 bg-muted/50 rounded-lg border border-border flex items-end gap-3 animate-in fade-in">

@@ -13,8 +13,22 @@ export async function generatePlanAction(uploadId: string) {
     const actions = await runPlannerAgent(uploadId);
     
     return { success: true, actions };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("Planner agent failed:", error);
-    return { success: false, error: error instanceof Error ? error.message : "Unknown error occurred while generating plan" };
+    
+    let structuredError = "Unknown error occurred while generating plan";
+    let code = "UNKNOWN_ERROR";
+
+    try {
+      const parsedError = JSON.parse(error.message);
+      if (parsedError.code) {
+        code = parsedError.code;
+        structuredError = parsedError.message;
+      }
+    } catch {
+      structuredError = error.message || structuredError;
+    }
+
+    return { success: false, error: { code, message: structuredError } };
   }
 }

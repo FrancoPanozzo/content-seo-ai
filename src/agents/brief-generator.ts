@@ -52,11 +52,15 @@ export async function runBriefGeneratorAgent(actionId: string) {
 
   console.log(`Running Brief Generator for Action ${actionId} (Keyword: ${targetKeyword})`);
 
+  let object;
+  let modelUsed = 'deepseek/deepseek-v4-flash';
   const startTime = Date.now();
-  const { object } = await generateObject({
-    model: openrouter('deepseek/deepseek-v4-flash'),
-    schema: BriefSchema,
-    prompt: `You are an expert SEO Editor and Content Strategist.
+  
+  try {
+    const response = await generateObject({
+      model: openrouter('deepseek/deepseek-v4-flash'),
+      schema: BriefSchema,
+      prompt: `You are an expert SEO Editor and Content Strategist.
 Create a highly detailed, publishable content brief for a writer.
 It must be so specific that a human editor can write the article without thinking much.
 Maintain a cohesive, professional but engaging tone ("Fanz" tone).
@@ -71,7 +75,40 @@ REQUIREMENTS:
 4. Include FAQs people actually ask about this.
 5. Provide a strong commercial angle.
 6. Suggest internal links to our existing pages listed in the context.`
-  });
+    });
+    object = response.object;
+  } catch (error) {
+    console.warn("Primary LLM (deepseek) failed, attempting fallback to gpt-4o-mini...", error);
+    try {
+      modelUsed = 'openai/gpt-4o-mini';
+      const fallbackResponse = await generateObject({
+        model: openrouter('openai/gpt-4o-mini'),
+        schema: BriefSchema,
+        prompt: `You are an expert SEO Editor and Content Strategist.
+Create a highly detailed, publishable content brief for a writer.
+It must be so specific that a human editor can write the article without thinking much.
+Maintain a cohesive, professional but engaging tone ("Fanz" tone).
+
+CONTEXT:
+${contextStr}
+
+REQUIREMENTS:
+1. Target keyword: ${targetKeyword}
+2. Define exact intent and audience.
+3. Outline must be deep and specific (H2s and H3s). No generic headers like "Conclusion".
+4. Include FAQs people actually ask about this.
+5. Provide a strong commercial angle.
+6. Suggest internal links to our existing pages listed in the context.`
+      });
+      object = fallbackResponse.object;
+    } catch (fallbackError) {
+      console.error("Fallback LLM also failed:", fallbackError);
+      throw new Error(JSON.stringify({
+        code: "LLM_PROVIDER_DOWN",
+        message: "AI providers are currently unreachable. Please try again later."
+      }));
+    }
+  }
   
   const latencyMs = Date.now() - startTime;
 
@@ -79,7 +116,7 @@ REQUIREMENTS:
   await prisma.llmLog.create({
     data: {
       uploadId: action.upload.id,
-      agentName: 'Brief Generator',
+      agentName: `Brief Generator (${modelUsed})`,
       prompt: `You are an expert SEO Editor and Content Strategist... [Truncated for DB]`,
       contextPayload: JSON.parse(contextStr),
       rawOutput: JSON.stringify(object),

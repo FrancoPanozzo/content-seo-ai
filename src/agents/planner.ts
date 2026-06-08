@@ -57,14 +57,18 @@ export async function runPlannerAgent(uploadId: string) {
   // 3. Call LLM
   console.log("Calling OpenRouter with deepseek-v4-flash...");
   const startTime = Date.now();
-  const { output } = await generateText({
-    model: openrouter('deepseek/deepseek-v4-flash'),
-    output: Output.object({
-      schema: z.object({
-        actions: z.array(ActionProposalSchema)
-      })
-    }),
-    prompt: `You are an expert SEO Strategist.
+  let output;
+  let modelUsed = 'deepseek/deepseek-v4-flash';
+  
+  try {
+    const response = await generateText({
+      model: openrouter('deepseek/deepseek-v4-flash'),
+      output: Output.object({
+        schema: z.object({
+          actions: z.array(ActionProposalSchema)
+        })
+      }),
+      prompt: `You are an expert SEO Strategist.
 Your goal is to analyze the provided dataset summary and generate a prioritized list of actions to improve the site's SEO performance.
 
 DATASET SUMMARY:
@@ -75,7 +79,40 @@ REQUIREMENTS:
 2. Rely only on the evidence provided in the JSON.
 3. Do not invent metrics or keywords that are not in the dataset.
 4. Output a structured plan.`
-  });
+    });
+    output = response.output;
+  } catch (error) {
+    console.warn("Primary LLM (deepseek) failed, attempting fallback to gpt-4o-mini...", error);
+    try {
+      modelUsed = 'openai/gpt-4o-mini';
+      const fallbackResponse = await generateText({
+        model: openrouter('openai/gpt-4o-mini'),
+        output: Output.object({
+          schema: z.object({
+            actions: z.array(ActionProposalSchema)
+          })
+        }),
+        prompt: `You are an expert SEO Strategist.
+Your goal is to analyze the provided dataset summary and generate a prioritized list of actions to improve the site's SEO performance.
+
+DATASET SUMMARY:
+${JSON.stringify(context, null, 2)}
+
+REQUIREMENTS:
+1. Generate actions across these types: create_brief, optimize_page, resolve_issue, add_internal_links.
+2. Rely only on the evidence provided in the JSON.
+3. Do not invent metrics or keywords that are not in the dataset.
+4. Output a structured plan.`
+      });
+      output = fallbackResponse.output;
+    } catch (fallbackError) {
+      console.error("Fallback LLM also failed:", fallbackError);
+      throw new Error(JSON.stringify({
+        code: "LLM_PROVIDER_DOWN",
+        message: "AI providers are currently unreachable. Please try again later."
+      }));
+    }
+  }
   
   const endTime = Date.now();
   const latencyMs = endTime - startTime;
@@ -85,7 +122,7 @@ REQUIREMENTS:
   await prisma.llmLog.create({
     data: {
       uploadId: upload.id,
-      agentName: 'Planner',
+      agentName: `Planner (${modelUsed})`,
       prompt: `You are an expert SEO Strategist... [Truncated for DB]`,
       contextPayload: context as any,
       rawOutput: JSON.stringify(output),

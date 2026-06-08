@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { generateObject } from 'ai';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { prisma } from '@/lib/prisma';
+import { runBriefGuardrails } from '@/guardrails';
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY || '',
@@ -71,5 +72,11 @@ REQUIREMENTS:
 6. Suggest internal links to our existing pages listed in the context.`
   });
 
-  return object;
+  const guardedBrief = runBriefGuardrails(object as any, action.upload as any);
+
+  if (guardedBrief.guardrailRejected) {
+    throw new Error(guardedBrief.rejectReason || "Brief was rejected by guardrails.");
+  }
+
+  return guardedBrief;
 }

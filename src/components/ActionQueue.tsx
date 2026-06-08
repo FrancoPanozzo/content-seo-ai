@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { updateActionStatus, applyActionDryRun } from "@/app/dashboard/queue-actions";
 import { Check, X, Play, Loader2, AlertTriangle, Info, ChevronDown, ChevronUp } from "lucide-react";
 
 export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
@@ -15,34 +14,41 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
     setLoadingStates(prev => ({ ...prev, [id]: isLoading }));
   };
 
-  const handleApprove = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setLoading(id, true);
-    await updateActionStatus(id, "approved");
-    setLocalActions(prev => prev.map((a: any) => a.id === id ? { ...a, status: "approved" } : a));
-    setLoading(id, false);
-  };
-
   const handleReject = async (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     if (!rejectReason.trim()) return;
+    setExpandedId(null);
     setLoading(id, true);
-    await updateActionStatus(id, "rejected", rejectReason);
+    
+    await fetch("/api/actions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ actionId: id, type: "reject", rejectReason })
+    });
+    
     setLocalActions(prev => prev.map((a: any) => a.id === id ? { ...a, status: "rejected", rejectReason } : a));
     setRejectPrompt(null);
     setRejectReason("");
     setLoading(id, false);
   };
 
-  const handleApply = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleApply = async (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setExpandedId(null);
     setLoading(id, true);
-    const res = await applyActionDryRun(id);
-    if (res.success && res.dryRunResult) {
+    
+    const res = await fetch("/api/actions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ actionId: id, type: "apply" })
+    });
+    const data = await res.json();
+    
+    if (data.success && data.dryRunResult) {
       setLocalActions(prev => prev.map((a: any) => a.id === id ? { 
         ...a, 
         status: "applied", 
-        payload: { ...(a.payload || {}), dryRunResult: res.dryRunResult } 
+        payload: { ...(a.payload || {}), dryRunResult: data.dryRunResult } 
       } : a));
     }
     setLoading(id, false);
@@ -63,46 +69,61 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
           const isLoading = !!loadingStates[action.id];
           const isExpanded = expandedId === action.id;
 
+          const typeColorMap: Record<string, string> = {
+            create_brief: "text-blue-600 bg-blue-500/10",
+            optimize_page: "text-emerald-600 bg-emerald-500/10",
+            resolve_issue: "text-red-600 bg-red-500/10",
+            add_internal_links: "text-purple-600 bg-purple-500/10",
+          };
+          const colorClass = typeColorMap[action.type] || "text-primary bg-primary/10";
+
+          const getHeaderTitle = (a: any) => {
+            let title = a.title || "";
+            const typeWords = a.type.replace(/_/g, ' ').toLowerCase();
+            
+            const lowerTitle = title.toLowerCase();
+            if (lowerTitle.startsWith(typeWords)) {
+              title = title.substring(typeWords.length).trim();
+              title = title.replace(/^(for|to|on|-|:)\s+/i, '').trim();
+            }
+            
+            return title.charAt(0).toUpperCase() + title.slice(1);
+          };
+
           return (
             <div 
               key={action.id} 
-              className={`border border-border rounded-xl bg-card shadow-sm transition-all duration-300 ${isExpanded ? 'ring-2 ring-primary/20 shadow-md' : 'hover:shadow-md'}`}
+              className={`border border-border rounded-xl bg-card transition-all duration-300 ${isExpanded ? 'shadow-md' : 'shadow-sm hover:shadow-md'}`}
             >
               {/* Accordion Header */}
               <div 
                 className="flex items-center justify-between p-4 cursor-pointer select-none"
                 onClick={() => setExpandedId(isExpanded ? null : action.id)}
               >
-                <div className="flex items-center gap-3">
-                  {isExpanded ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
-                  <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-1 rounded-md shrink-0">
-                    {action.type.replace('_', ' ')}
+                <div className="flex items-center gap-3 flex-1 min-w-0 pr-4">
+                  <div className="shrink-0">
+                    {isExpanded ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+                  </div>
+                  <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md shrink-0 ${colorClass}`}>
+                    {action.type.replace(/_/g, ' ')}
                   </span>
-                  <h4 className="font-semibold text-base line-clamp-1 truncate max-w-[200px] sm:max-w-[400px]">
-                    {action.title}
+                  <h4 className="font-semibold text-base truncate">
+                    {getHeaderTitle(action)}
                   </h4>
                 </div>
                 
-                <div className="flex items-center gap-3">
-                  <span className={`text-xs font-medium px-2.5 py-1 rounded-md hidden sm:inline-block ${
-                    isApplied ? "bg-blue-500/10 text-blue-500" :
-                    isApproved ? "bg-emerald-500/10 text-emerald-500" :
-                    isRejected ? "bg-red-500/10 text-red-500" :
-                    "bg-amber-500/10 text-amber-500"
-                  }`}>
-                    {action.status}
-                  </span>
-                  
-                  {/* Quick Action Button in Header */}
-                  {isPending && !isLoading && !isExpanded && (
-                    <button 
-                      onClick={(e) => handleApprove(action.id, e)}
-                      className="p-1.5 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white rounded-md transition-colors"
-                      title="Quick Approve"
-                    >
-                      <Check className="w-4 h-4" />
-                    </button>
+                <div className="flex items-center gap-3 shrink-0">
+                  {!isPending && (
+                    <span className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md hidden sm:inline-block ${
+                      isApplied ? "bg-blue-500/10 text-blue-500" :
+                      isApproved ? "bg-emerald-500/10 text-emerald-500" :
+                      isRejected ? "bg-red-500/10 text-red-500" :
+                      "bg-amber-500/10 text-amber-500"
+                    }`}>
+                      {action.status}
+                    </span>
                   )}
+                  
                   {isLoading && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
                 </div>
               </div>
@@ -110,6 +131,7 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
               {/* Accordion Body */}
               {isExpanded && (
                 <div className="px-5 pb-5 pt-2 border-t border-border animate-in slide-in-from-top-2 duration-200">
+                  <h3 className="text-lg font-semibold mb-2">{action.title}</h3>
                   <p className="text-sm text-muted-foreground mb-4">{action.reason}</p>
                   
                   {risks.length > 0 && (
@@ -135,12 +157,12 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
                     {isPending && (
                       <>
                         <button 
-                          onClick={(e) => handleApprove(action.id, e)}
+                          onClick={(e) => handleApply(action.id, e)}
                           disabled={isLoading}
-                          className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                          className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                         >
-                          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                          Approve Action
+                          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                          Apply
                         </button>
                         <button 
                           onClick={(e) => {
@@ -150,20 +172,9 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
                           disabled={isLoading}
                           className="flex items-center justify-center gap-2 bg-destructive/10 hover:bg-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                         >
-                          <X className="w-4 h-4" /> Reject Action
+                          <X className="w-4 h-4" /> Reject
                         </button>
                       </>
-                    )}
-                    
-                    {isApproved && (
-                      <button 
-                        onClick={(e) => handleApply(action.id, e)}
-                        disabled={isLoading}
-                        className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
-                      >
-                        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
-                        Apply Dry-Run (Generate Brief)
-                      </button>
                     )}
                   </div>
 
@@ -194,10 +205,11 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
                     </div>
                   )}
 
+
                   {isApplied && payload.dryRunResult && (
                     <div className="mt-4 border-t border-border pt-4 animate-in fade-in">
                       <div className="flex items-center gap-2 mb-2 text-sm font-semibold text-primary">
-                        <Info className="w-4 h-4" /> Dry-Run Payload Generated
+                        <Info className="w-4 h-4" /> Action Applied
                       </div>
                       <pre className="p-4 bg-muted/50 rounded-lg text-xs font-mono overflow-auto max-h-[400px]">
                         {JSON.stringify(payload.dryRunResult, null, 2)}

@@ -320,7 +320,7 @@ export function DataTables({ pages, keywords, competitors, technicalIssues, acti
               )
             },
             {
-              header: "Dry Run Result",
+              header: "Action Result",
               accessorKey: "payload",
               cell: (row) => {
                 const dryRun = row.payload?.dryRunResult;

@@ -113,6 +113,11 @@ export function ActionQueue({ actions: initialActions }: { actions: any[] }) {
                 </div>
                 
                 <div className="flex items-center gap-3 shrink-0">
+                  {payload.isDerivedKeyword && (
+                    <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-amber-500/20 text-amber-600 border border-amber-500/30 hidden md:inline-block">
+                      Derived Keyword
+                    </span>
+                  )}
                   {!isPending && (
                     <span className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md hidden sm:inline-block ${
                       isApplied ? "bg-blue-500/10 text-blue-500" :

@@ -44,9 +44,12 @@ export function runPlannerGuardrails(
       rejectReason = `Keyword '${targetKeyword}' is already covered by an existing page.`;
     }
 
+    let isDerivedKeyword = false;
+
     // SOFT RULE: Keyword doesn't exist in dataset
     if (targetKeyword && !existingKeywords.has(targetKeyword)) {
       risks.push(`Keyword '${targetKeyword}' does not exist in the dataset.`);
+      isDerivedKeyword = true;
     }
 
     // SOFT RULE: Pushing B2C content when audience might be B2B
@@ -58,7 +61,8 @@ export function runPlannerGuardrails(
     // Inject risks into payload
     const updatedPayload = {
       ...action.payload,
-      ...(risks.length > 0 ? { risks } : {})
+      ...(risks.length > 0 ? { risks } : {}),
+      ...(isDerivedKeyword ? { isDerivedKeyword } : {})
     };
 
     return {

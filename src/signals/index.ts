@@ -5,6 +5,7 @@ import { detectZeroConversions } from './zero-conversions';
 import { detectDeadWeight } from './dead-weight';
 import { detectKeywordGaps } from './keyword-gaps';
 import { detectCompetitorGaps } from './competitor-gaps';
+import { detectAudienceMismatch } from './audience-mismatch';
 
 export function runAllSignals(
   pages: Page[],
@@ -18,6 +19,7 @@ export function runAllSignals(
   issues.push(...detectDeadWeight(pages));
   issues.push(...detectKeywordGaps(keywords));
   issues.push(...detectCompetitorGaps(pages, competitors));
+  issues.push(...detectAudienceMismatch(pages, keywords));
   // Add future signals here
   return issues;
 }

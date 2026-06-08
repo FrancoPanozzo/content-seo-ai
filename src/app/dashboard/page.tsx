@@ -183,7 +183,7 @@ export default function DashboardPage() {
         </>
       )}
 
-      {isSuccess && uploadedData && (
+      {isSuccess && uploadedData !== null && (
         <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
             <div className="flex items-center gap-3">

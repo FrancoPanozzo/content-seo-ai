@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { generateText, Output } from 'ai';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { prisma } from '@/lib/prisma';
+import { runPlannerGuardrails } from '@/guardrails';
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY || '',
@@ -81,8 +82,11 @@ REQUIREMENTS:
 
   console.log("LLM returned actions:", output.actions.length);
 
-  // 4. Save actions to DB
-  const actionsData = output.actions.map(action => ({
+  // 4. Run Guardrails
+  const guardedActions = runPlannerGuardrails(output.actions, upload as any);
+
+  // 5. Save actions to DB
+  const actionsData = guardedActions.map(action => ({
     uploadId: upload.id,
     type: action.type,
     title: action.title,
@@ -90,8 +94,9 @@ REQUIREMENTS:
     evidence: action.evidence,
     priority: action.priority,
     confidence: action.confidence,
-    payload: action.payload,
-    status: "pending"
+    payload: action.payload as any,
+    status: action.status,
+    rejectReason: action.rejectReason
   }));
 
   const createdActions = await prisma.$transaction(

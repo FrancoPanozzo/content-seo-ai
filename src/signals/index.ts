@@ -2,6 +2,7 @@ import { Page, Keyword, Competitor, TechnicalIssue } from '../types';
 import { detectLowCtrHighImpressions } from './low-ctr';
 import { detectStrikingDistance } from './striking-distance';
 import { detectZeroConversions } from './zero-conversions';
+import { detectDeadWeight } from './dead-weight';
 
 export function runAllSignals(
   pages: Page[],
@@ -12,6 +13,7 @@ export function runAllSignals(
   issues.push(...detectLowCtrHighImpressions(pages));
   issues.push(...detectStrikingDistance(pages));
   issues.push(...detectZeroConversions(pages));
+  issues.push(...detectDeadWeight(pages));
   // Add future signals here
   return issues;
 }

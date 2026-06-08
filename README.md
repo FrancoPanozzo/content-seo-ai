@@ -68,3 +68,14 @@ pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## AI Models
+
+- **Primary Model:** `deepseek-v4-flash` via OpenRouter. We chose this model because it offers an incredible value for its price and speed, efficiently processing large dataset payloads while adhering to strict JSON structured outputs at a fraction of the cost of premium models.
+- **Fallback Model:** `gpt-4o-mini` via OpenRouter. A robust, highly available fallback used in our failover strategy in case the primary provider is unreachable.
+
+## Future Work
+
+- **Fine-Tuning Prompts:** Iterate and refine prompt engineering to improve content generation quality and ensure even better alignment with Fanz's editorial tone.
+- **Integrate Additional Agents:** Expand the system by incorporating more specialized agents (e.g., technical SEO optimizer, automatic interlinking crawler) to fix current issues dynamically without requiring a full system rework.
+- **Direct CMS Integration:** Connect directly to the production CMS (e.g., Webflow, WordPress) to automatically pull live data and seamlessly push/sync approved content briefs, bypassing the need for manual JSON uploads.
